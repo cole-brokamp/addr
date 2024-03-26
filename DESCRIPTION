@@ -18,3 +18,5 @@ Imports:
     glue,
     purrr,
     stringr
+URL: https://github.com/cole-brokamp/addr
+BugReports: https://github.com/cole-brokamp/addr/issues
