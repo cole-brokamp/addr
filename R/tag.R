@@ -1,24 +1,9 @@
-code <- r"(
-fn usaddress_tag(input: Vec<String>) -> Robj {
-    let ta: Vec<_> = input
-	.iter().map(|x| usaddress::parse(x).unwrap())
-	.map(|x| Pairlist::from_pairs(x))
-	.collect();
-    return(r!(List::from_values(ta)))
-}
-)"
-
-rextendr::rust_function(
-  code = code,
-  dependencies = list(`usaddress` = "0.1")
-  ## https://docs.rs/crate/usaddress/latest
-)
-
 #' Tag components of an address string
 #' The address components are based upon the [United States Thoroughfare,
 #' Landmark, and Postal Address Data Standard](http://www.urisa.org/advocacy/united-states-thoroughfare-landmark-and-postal-address-data-standard)
 #' @param x a character vector of addresses
 #' @return a list, the same length as x, of lists of address component tags
+#' @export
 #' @examples
 #' addr_tag(c("224 Woolper Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
 addr_tag <- function(x) {

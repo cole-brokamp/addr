@@ -9,6 +9,8 @@
 #' and only the first five digits of the ZIP Code are used.
 #' If any address tags are missing (except for `StreetNamePostType`), then a missing
 #' standardized address will be returned.
+#' @param x a character vector of address strings
+#' @return a character vector of standardized address strings
 #' @export
 #' @examples
 #' addr_standardize(

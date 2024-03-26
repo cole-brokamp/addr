@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(hashdress)
+library(addr)
 
-test_check("hashdress")
+test_check("addr")

@@ -6,6 +6,12 @@
 \usage{
 addr_standardize(x)
 }
+\arguments{
+\item{x}{a character vector of address strings}
+}
+\value{
+a character vector of standardized address strings
+}
 \description{
 After cleaning and tagging addresses, specific tags are
 concatenated to create a harmonized address suitable
