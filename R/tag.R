@@ -27,3 +27,32 @@ addr_tag <- function(x) {
     usaddress_tag()
   lapply(tags, \(.) stats::setNames(names(.), .))
 }
+
+## labels <- c(
+##   "AddressNumber",
+##   "StreetNamePreDirectional",
+##   "StreetName",
+##   "StreetNamePostType",
+##   "OccupancyIdentifier",
+##   "OccupancyType",
+##   "StreetNamePreType",
+##   "PlaceName",
+##   "ZipCode",
+##   "StateName",
+##   "LandmarkName",
+##   "USPSBoxType",
+##   "USPSBoxID",
+##   "StreetNamePostDirectional",
+##   "AddressNumberSuffix",
+##   "USPSBoxGroupID",
+##   "USPSBoxGroupType",
+##   "SubaddressIdentifier",
+##   "SubaddressType",
+##   "Recipient",
+##   "StreetNamePreModifier",
+##   "BuildingName",
+##   "AddressNumberPrefix",
+##   "IntersectionSeparator",
+##   "CornerOf",
+##   "NotAddress"
+## )
