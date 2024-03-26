@@ -1,0 +1,14 @@
+Package: addr
+Title: Clean, Parse, Harmonize, and Hash Messy Real-World Addresses
+Version: 0.1.0
+Authors@R: 
+    person("Cole", "Brokamp", , "cole@colebrokamp.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0289-3151"))
+Description: Addresses that were not validated at the time of collection are often heterogenously formatted, making them difficult to compare or link to other sets of addresses. The addr package is designed to clean character strings of addresses, use the `usaddress` library to tag address components, and paste together select components to create a normalized address. Normalized addresses can be hashed to create hashdresses that can be used to merge with other sets of addresses.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
