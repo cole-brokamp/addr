@@ -10,4 +10,4 @@ name = 'addr'
 
 [dependencies]
 extendr-api = '*'
-usaddress = { version = "*"}
+usaddress = { version = "0.1"}

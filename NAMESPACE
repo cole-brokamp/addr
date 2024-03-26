@@ -3,5 +3,6 @@
 export(addr_clean)
 export(addr_standardize)
 export(addr_tag)
+export(expand_post_type)
 export(usaddress_tag)
 useDynLib(addr, .registration = TRUE)

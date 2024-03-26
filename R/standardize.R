@@ -47,6 +47,7 @@ addr_standardize <- function(x) {
 #' expanded versions (e.g., "avenue", "street").
 #' @param x character vector of length one
 #' @return a character vector of length one representing the expanded street name post type
+#' @export
 #' @examples
 #' expand_post_type("ave")
 #' expand_post_type("av")
