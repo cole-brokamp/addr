@@ -24,5 +24,5 @@ Tag components of an address string
 The address components are based upon the \href{http://www.urisa.org/advocacy/united-states-thoroughfare-landmark-and-postal-address-data-standard}{United States Thoroughfare, Landmark, and Postal Address Data Standard}
 }
 \examples{
-addr_tag(c("224 Woolper Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
+addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
 }

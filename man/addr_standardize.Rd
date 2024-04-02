@@ -24,13 +24,13 @@ standardized address will be returned.
 }
 \examples{
 addr_standardize(
-x = c(
-  "224 Woolper Avenue Apt 2 Cincinnati OH 45220",
-  "224 wOoLpEr Avenue Cincinnati OH 45220",
-  "224 Woolper Avenue Apt #2 Cincinnati OH 45220",
-  "224 Woolper Ave Cincinnati OH 45220",
-  "224 Woolper Av. Cincinnati OH 45220",
-  "224 Woolper Avenue Cincinnati 45220"
-)
+  x = c(
+    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
+    "3333 bUrNeT Avenue Cincinnati OH 45220",
+    "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
+    "3333 Burnet Ave Cincinnati OH 45220",
+    "3333 Burnet Av. Cincinnati OH 45220",
+    "3333 Burnet Avenue Cincinnati 45220"
+  )
 )
 }

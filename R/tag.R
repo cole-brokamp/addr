@@ -5,7 +5,7 @@
 #' @return a list, the same length as x, of named character vectors of address component tags
 #' @export
 #' @examples
-#' addr_tag(c("224 Woolper Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
+#' addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
 addr_tag <- function(x) {
   tags <-
     x |>

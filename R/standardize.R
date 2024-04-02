@@ -14,14 +14,14 @@
 #' @export
 #' @examples
 #' addr_standardize(
-#' x = c(
-#'   "224 Woolper Avenue Apt 2 Cincinnati OH 45220",
-#'   "224 wOoLpEr Avenue Cincinnati OH 45220",
-#'   "224 Woolper Avenue Apt #2 Cincinnati OH 45220",
-#'   "224 Woolper Ave Cincinnati OH 45220",
-#'   "224 Woolper Av. Cincinnati OH 45220",
-#'   "224 Woolper Avenue Cincinnati 45220"
-#' )
+#'   x = c(
+#'     "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
+#'     "3333 bUrNeT Avenue Cincinnati OH 45220",
+#'     "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
+#'     "3333 Burnet Ave Cincinnati OH 45220",
+#'     "3333 Burnet Av. Cincinnati OH 45220",
+#'     "3333 Burnet Avenue Cincinnati 45220"
+#'   )
 #' )
 addr_standardize <- function(x) {
   x_tags <- addr_tag(x)
@@ -34,7 +34,7 @@ addr_standardize <- function(x) {
                      "{expand_post_type(tolower(StreetNamePostType))}",
                      "{PlaceName}",
                      "{StateName}",
-                     "substr({ZipCode}, 1, 5)",
+                     "{substr(ZipCode, 1, 5)}",
                      .sep = " ")
     })
   purrr::map_chr(glues, \(x) purrr::pluck(x, "result", .default = NA)) |>
@@ -78,9 +78,9 @@ expand_post_type <- function(x) {
     ) |>
     unlist()
   out <-
-    lookup[match(x, lookup)] |>
+    lookup[match(tolower(x), lookup)] |>
     names() |>
-    stringr::str_replace_all("[^a-zA-Z]", "")
+    stringr::str_replace_all("[^a-z]", "")
   if (is.na(out)) {
     return(x)
   }

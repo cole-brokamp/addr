@@ -16,10 +16,11 @@ a vector of cleaned addresses
 remove excess whitespace keep only letters, numbers, and \code{-}
 }
 \examples{
-addr_clean("224 Woolper Ave Cincinnati OH 45220")
-addr_clean("22_4 Woolper Ave. Cincinnati OH 45220")
-addr_clean("22\\\\4 W\"oolper Ave; Ci!ncinn&*ati OH 45220")
-addr_clean(c("224 Woolper Ave Cincinnati OH 45220",
-             "22_4 Woolper Ave. Cincinnati OH 45220",
-             "3333 Burnet Ave Cincinnati OH 34230"))
+addr_clean(c(
+    "3333 Burnet Ave Cincinnati OH 45219",
+    "33_33 Burnet Ave. Cincinnati OH 45219",
+    "33\\\\33 B\"urnet Ave; Ci!ncinn&*ati OH 45219",
+    "3333 Burnet Ave Cincinnati OH 45219",
+    "33_33 Burnet Ave. Cincinnati OH 45219"
+  ))
 }
