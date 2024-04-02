@@ -1,5 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/hashdress)](https://CRAN.R-project.org/package=hashdress)
+[![R-CMD-check](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 # addr
 
@@ -54,10 +62,19 @@ addr_standardize(
 #> [5] "3333 burnet avenue cincinnati oh 45220"
 ```
 
-Under the hood, address text is cleaned (`addr_clean()`) and parsed into
-components (`addr_tag()`). If applicable, the street type abbreviation
-is expanded (`expand_post_type()`), and the first five digits of the ZIP
-Code are extracted.
+Use a hash representing the standardized address instead:
+
+``` r
+addr_hash(
+  x = c(
+    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
+    "3333 bUrNeT Avenue Cincinnati OH 45220",
+    "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
+    "3333 Burnet Ave Cincinnati OH 45220",
+    "3333 Burnet Av. Cincinnati OH 45220"
+  )
+)
+```
 
 Use `addr_tag()` to generate tagged address components:
 
