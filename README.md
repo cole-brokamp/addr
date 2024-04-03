@@ -78,9 +78,13 @@ addr_hash(
     "3333 Burnet Av. Cincinnati OH 45220"
   )
 )
+#> [1] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
+#> [3] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
+#> [5] "da219816d9cb3e1bb53291312cfa1dfd"
 ```
 
-Use `addr_tag()` to generate tagged address components:
+For finer control, use `addr_tag()` to generate tagged address
+components:
 
 ``` r
 addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))

@@ -62,7 +62,6 @@ addr_standardize(
 Use a hash representing the standardized address instead:
 
 ```{r}
-#| eval: false
 addr_hash(
   x = c(
     "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
@@ -74,8 +73,7 @@ addr_hash(
 )
 ```
 
-
-Use `addr_tag()` to generate tagged address components:
+For finer control, use `addr_tag()` to generate tagged address components:
 
 ```{r}
 addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
