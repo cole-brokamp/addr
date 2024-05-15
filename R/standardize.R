@@ -22,7 +22,6 @@
 #'     "3333 Burnet Av. Cincinnati OH 45220",
 #'     "3333 Burnet Avenue Cincinnati 45220"
 #'   )
-#' )
 addr_standardize <- function(x) {
   x_tags <- addr_tag(x)
   safe_glue_data <- purrr::safely(glue::glue_data)
@@ -30,7 +29,7 @@ addr_standardize <- function(x) {
     purrr::map(x_tags, \(i) {
       safe_glue_data(i,
                      "{AddressNumber}",
-                     "{StreetName}",
+                     "{StreetName}", # TODO problem with two word streets; e.g. "202 Riva Ridge Ct"
                      "{expand_post_type(tolower(StreetNamePostType))}",
                      "{PlaceName}",
                      "{StateName}",
@@ -73,7 +72,7 @@ expand_post_type <- function(x) {
       "road" = c("rd"),
       "route" = c("rt"),
       "street" = c("st", "str"),
-      "terrace" = c("te", "ter", "terr"),
+      "terrace" = c("te", "ter", "terr", "trce"),
       "way" = c("wy")
     ) |>
     unlist()
