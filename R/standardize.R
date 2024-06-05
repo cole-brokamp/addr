@@ -75,14 +75,7 @@ expand_post_type <- function(x) {
       "terrace" = c("te", "ter", "terr", "trce"),
       "way" = c("wy")
     ) |>
-    unlist()
-  out <-
-    lookup[match(tolower(x), lookup)] |>
-    names() |>
-    stringr::str_replace_all("[^a-z]", "")
-  if (is.na(out)) {
-    return(x)
-  }
-  return(out)
+    purrr::imap(\(.x, .i) setNames(c(.i, as.character(.x)), rep(.i, times = length(.x) + 1))) |>
+    purrr::flatten()
+  return(names(lookup[match(tolower(x), lookup)]))
 }
-
