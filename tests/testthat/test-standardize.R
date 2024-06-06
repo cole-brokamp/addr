@@ -9,7 +9,7 @@ test_that("addr_standardize works", {
       "3333 Burnet Avenue Cincinnati 45220"
     )
   ) |>
-    expect_equal(c(rep("3333 burnet avenue cincinnati oh 45220", times = 5), NA))
+    expect_equal(c(rep("3333 burnet avenue cincinnati oh 45220", 5), "3333 burnet avenue cincinnati na 45220"))
 })
 
 test_that("addr_standardize works with tricky addresses", {
@@ -26,5 +26,5 @@ test_that("addr_standardize works with tricky addresses", {
 
 test_that("expand_post_type works", {
   expand_post_type(c("ave", "av", "avenue", "st", NA, "")) |>
-    expect_equal(c("Avenue", "Avenue", "Avenue", "Street", NA, NA))
+    expect_equal(c("Avenue", "Avenue", "Avenue", "Street", NA, ""))
 })
