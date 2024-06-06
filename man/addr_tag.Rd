@@ -7,21 +7,56 @@
 \usage{
 usaddress_tag(input)
 
-addr_tag(x)
+addr_tag(x, clean_address_text = TRUE)
 }
 \arguments{
 \item{input}{a character vector of addresses}
 
 \item{x}{a character vector of addresses}
+
+\item{clean_address_text}{logical; clean addresses prior to tagging with \code{addr_clean()}?}
 }
 \value{
-a list, the same length as x, of named character vectors of address component tags
+a list, the same length as x, of named character vectors of address component tags;
+each vector contains all space-separated elements of the cleaned address
+and are each named based on inferred address labels (see Details)
 }
 \description{
 Return list of lists of address tags to R.
 
 Tag components of an address string
 The address components are based upon the \href{http://www.urisa.org/advocacy/united-states-thoroughfare-landmark-and-postal-address-data-standard}{United States Thoroughfare, Landmark, and Postal Address Data Standard}
+}
+\details{
+Possible address labels include:
+\itemize{
+\item \code{AddressNumber}
+\item \code{StreetNamePreDirectional}
+\item \code{StreetName}
+\item \code{StreetNamePostType}
+\item \code{OccupancyIdentifier}
+\item \code{OccupancyType}
+\item \code{StreetNamePreType}
+\item \code{PlaceName}
+\item \code{ZipCode}
+\item \code{StateName}
+\item \code{LandmarkName}
+\item \code{USPSBoxType}
+\item \code{USPSBoxID}
+\item \code{StreetNamePostDirectional}
+\item \code{AddressNumberSuffix}
+\item \code{USPSBoxGroupID}
+\item \code{USPSBoxGroupType}
+\item \code{SubaddressIdentifier}
+\item \code{SubaddressType}
+\item \code{Recipient}
+\item \code{StreetNamePreModifier}
+\item \code{BuildingName}
+\item \code{AddressNumberPrefix}
+\item \code{IntersectionSeparator}
+\item \code{CornerOf}
+\item \code{NotAddress}
+}
 }
 \examples{
 addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))

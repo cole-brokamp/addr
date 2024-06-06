@@ -13,14 +13,14 @@ addr_clean(.x)
 a vector of cleaned addresses
 }
 \description{
-remove excess whitespace keep only letters, numbers, and \code{-}
+remove excess whitespace; keep only letters, numbers, and \code{-}
 }
 \examples{
 addr_clean(c(
-    "3333 Burnet Ave Cincinnati OH 45219",
-    "33_33 Burnet Ave. Cincinnati OH 45219",
-    "33\\\\33 B\"urnet Ave; Ci!ncinn&*ati OH 45219",
-    "3333 Burnet Ave Cincinnati OH 45219",
-    "33_33 Burnet Ave. Cincinnati OH 45219"
-  ))
+  "3333 Burnet Ave Cincinnati OH 45219",
+  "33_33 Burnet Ave. Cincinnati OH 45219",
+  "33\\\\33 B\"urnet Ave; Ci!ncinn&*ati OH 45219",
+  "3333 Burnet Ave Cincinnati OH 45219",
+  "33_33 Burnet Ave. Cincinnati OH 45219"
+))
 }

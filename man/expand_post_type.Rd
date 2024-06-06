@@ -7,20 +7,15 @@
 expand_post_type(x)
 }
 \arguments{
-\item{x}{character vector of length one}
+\item{x}{character vector of \code{StreetnamePostType} abbreviations}
 }
 \value{
-a character vector of length one representing the expanded street name post type
+a character vector of the same length containing the expanded street name post type
 }
 \description{
 Abbreviations of street type (e.g., "Ave", "St") are converted to
-expanded versions (e.g., "avenue", "street").
+expanded versions (e.g., "Avenue", "Street").
 }
 \examples{
-expand_post_type("ave")
-expand_post_type("av")
-expand_post_type("av")
-expand_post_type("avenue")
-expand_post_type("st")
-expand_post_type(NULL)
+expand_post_type(c("ave", "av", "Avenue", "tl"))
 }

@@ -4,23 +4,42 @@
 \alias{addr_standardize}
 \title{Address standardization}
 \usage{
-addr_standardize(x)
+addr_standardize(
+  x,
+  tags = c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName",
+    "ZipCode"),
+  five_digit_zip = TRUE,
+  expand_street_name_post_type = TRUE,
+  clean_address_text = TRUE
+)
 }
 \arguments{
 \item{x}{a character vector of address strings}
+
+\item{tags}{a character vector of tag names to be used, in order, to create the standardized address}
+
+\item{five_digit_zip}{logical; return only the first five digits of the parsed ZIP code?}
+
+\item{expand_street_name_post_type}{logical; use \code{expand_post_type()} to expand street type abbreviations}
+
+\item{clean_address_text}{logical; clean addresses prior to tagging with \code{addr_clean()}?}
 }
 \value{
 a character vector of standardized address strings
 }
 \description{
 After cleaning and tagging addresses, specific tags are
-concatenated to create a harmonized address suitable
+concatenated (separated by spaces) to create a harmonized address suitable
 for comparison and/or hashing.
-Specific tags are separate by spaces; i.e., \verb{\{AddressNumber\} \{StreetName\} \{StreetNamePostType\} \{PlaceName\} \{StateName\} \{ZipCode\}}. All address tags are converted to lower case,
+Specific tags are separate by spaces; e.g., \verb{\{AddressNumber\} \{StreetName\} \{StreetNamePostType\} \{PlaceName\} \{StateName\} \{ZipCode\}}.
+By default, all address tags are converted to lower case,
 street name post types are expanded (e.g., "str" to "street" and "ave" to "avenue"),
 and only the first five digits of the ZIP Code are used.
 If any address tags are missing (except for \code{StreetNamePostType}), then a missing
 standardized address will be returned.
+In the case of an address having more than one word for a tag
+(e.g., "Riva Ridge" for \code{StreetName}), then these are concatenated together, separated by a space
+in the order they appeared in the address.
 }
 \examples{
 addr_standardize(
