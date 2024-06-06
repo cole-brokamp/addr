@@ -37,6 +37,7 @@ addr_standardize <- function(x,
                              expand_street_name_post_type = TRUE,
                              clean_address_text = TRUE) {
   x_tags <- addr_tag(x, clean_address_text = clean_address_text)
+  tags <- rlang::arg_match(tags, multiple = TRUE)
 
   safe_extract_one <- function(x, name) {
     out <- paste(x[names(x) == name], collapse = " ")
@@ -48,13 +49,13 @@ addr_standardize <- function(x,
     purrr::map(tags, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
     setNames(tags)
 
-  if (five_digit_zip) standard_tags$ZipCode <- substr(standard_tags$ZipCode, 1, 5)
+  if (five_digit_zip && "ZipCode" %in% tags) standard_tags$ZipCode <- substr(standard_tags$ZipCode, 1, 5)
 
   if (expand_street_name_post_type) standard_tags$StreetNamePostType <- expand_post_type(tolower(standard_tags$StreetNamePostType))
 
   out <-
     purrr::transpose(standard_tags) |>
-    purrr::map_chr(paste, collapse = " ") |>
+    purrr::map_chr(\(.) paste(na.omit(.), collapse = " ")) |>
     tolower()
 
   return(out)
@@ -63,31 +64,45 @@ addr_standardize <- function(x,
 #' Expand street name post type
 #'
 #' Abbreviations of street type (e.g., "Ave", "St") are converted to
-#' expanded versions (e.g., "avenue", "street").
+#' expanded versions (e.g., "Avenue", "Street").
 #' @param x character vector of `StreetnamePostType` abbreviations
 #' @return a character vector of the same length containing the expanded street name post type
 #' @export
 #' @examples
-#' expand_post_type(c("ave", "av", "Avenue"))
+#' expand_post_type(c("ave", "av", "Avenue", "tl"))
 expand_post_type <- function(x) {
   lookup <-
     list(
-      "avenue" = c("av", "ave", "avnue"),
-      "boulevard" = c("blvd", "blvrd"),
-      "circle" = c("cir", "cr", "crcl"),
-      "court" = c("ct"),
-      "drive" = c("dr", "drv"),
-      "highway" = c("hgwy", "hw", "hway", "hwy", "hywy"),
-      "lane" = c("ln"),
-      "parkway" = c("pkwy"),
-      "place" = c("pl"),
-      "road" = c("rd"),
-      "route" = c("rt"),
-      "street" = c("st", "str"),
-      "terrace" = c("te", "ter", "terr", "trce"),
-      "way" = c("wy")
+      "Avenue" = c("av", "ave", "avnue"),
+      "Boulevard" = c("blvd", "blvrd", "bv"),
+      "Circle" = c("cir", "cr", "crcl"),
+      "Court" = c("ct"),
+      "Crescent" = c("cres"),
+      "Drive" = c("dr", "drv"),
+      "Highway" = c("hgwy", "hw", "hway", "hwy", "hywy"),
+      "Lane" = c("ln"),
+      ## "Path" = c("path"),
+      "Parkway" = c("pkwy"),
+      "Pike" = c("pk"),
+      # 2406 South Rd, 2410 South Rd, 2268 South Rd
+      # 3624 Westwood Northern Bv
+      # 5105 State Route 128
+      # 214 FOURTEENTH ST ST
+      # 3040 SOUTH RD, 3058 SOUTH RD
+      # 1312 BROADWAY
+      "Place" = c("pl"),
+      "Point" = c("pointe", "pt"), # palisades pointe
+      "Road" = c("rd"),
+      "Route" = c("rt"),
+      "Street" = c("st", "str"),
+      "Terrace" = c("te", "ter", "terr", "trce"),
+      "Trail" = c("tr", "tl"),
+      "Way" = c("wy")
     ) |>
-    purrr::imap(\(.x, .i) setNames(c(.i, as.character(.x)), rep(.i, times = length(.x) + 1))) |>
+    purrr::imap(\(.x, .i) setNames(c(tolower(.i), as.character(.x)), rep(.i, times = length(.x) + 1))) |>
     purrr::flatten()
-  return(names(lookup[match(tolower(x), lookup)]))
+  out <- names(lookup[match(tolower(x), lookup)])
+  # replace unmatched with original input
+  out[is.na(out)] <- x[is.na(out)]
+  return(out)
 }

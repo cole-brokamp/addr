@@ -13,21 +13,18 @@ test_that("addr_standardize works", {
 })
 
 test_that("addr_standardize works with tricky addresses", {
-
-  x <- c(
+  c(
     "202 Riva Ridge Ct Cincinnati OH 45140", # more than one word in street name
-    "3333 Burnet Ave San Francisco OH 45219" 
-    )
-    
-
+    "3333 Burnet Ave San Francisco OH 45219"
+  ) |>
+    addr_standardize() |>
+    expect_equal(c(
+      "202 riva ridge court cincinnati oh 45140",
+      "3333 burnet avenue san francisco oh 45219"
+    ))
 })
 
 test_that("expand_post_type works", {
-  expect_equal(expand_post_type("ave"), "avenue")
-  expect_equal(expand_post_type("av"), "avenue")
-  expect_equal(expand_post_type("av"), "avenue")
-  expect_equal(expand_post_type("avenue"), "avenue")
-  expect_equal(expand_post_type("st"), "street")
-  expect_equal(expand_post_type(NULL), NULL)
+  expand_post_type(c("ave", "av", "avenue", "st", NA, "")) |>
+    expect_equal(c("Avenue", "Avenue", "Avenue", "Street", NA, NA))
 })
-
