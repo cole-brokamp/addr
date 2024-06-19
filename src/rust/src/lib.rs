@@ -10,7 +10,7 @@ fn usaddress_tag(input: Vec<String>) -> Robj {
 	.iter().map(|x| usaddress::parse(x).unwrap())
 	.map(|x| Pairlist::from_pairs(x))
 	.collect();
-    return(r!(List::from_values(ta)))
+    return r!(List::from_values(ta))
 }
 
 // Macro to generate exports.

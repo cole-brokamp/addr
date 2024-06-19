@@ -10,7 +10,8 @@ addr_standardize(
     "ZipCode"),
   five_digit_zip = TRUE,
   expand_street_name_post_type = TRUE,
-  clean_address_text = TRUE
+  clean_address_text = TRUE,
+  collapse = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ addr_standardize(
 \item{expand_street_name_post_type}{logical; use \code{expand_post_type()} to expand street type abbreviations}
 
 \item{clean_address_text}{logical; clean addresses prior to tagging with \code{addr_clean()}?}
+
+\item{collapse}{logical; combine standardized tags to output a single string per address}
 }
 \value{
 a character vector of standardized address strings

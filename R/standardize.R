@@ -18,6 +18,7 @@
 #' @param five_digit_zip logical; return only the first five digits of the parsed ZIP code?
 #' @param expand_street_name_post_type logical; use `expand_post_type()` to expand street type abbreviations
 #' @param clean_address_text logical; clean addresses prior to tagging with `addr_clean()`?
+#' @param collapse logical; combine standardized tags to output a single string per address
 #' @return a character vector of standardized address strings
 #' @export
 #' @examples
@@ -35,7 +36,8 @@ addr_standardize <- function(x,
                              tags = c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName", "ZipCode"),
                              five_digit_zip = TRUE,
                              expand_street_name_post_type = TRUE,
-                             clean_address_text = TRUE) {
+                             clean_address_text = TRUE,
+                             collapse = TRUE) {
   x_tags <- addr_tag(x, clean_address_text = clean_address_text)
   tags <- rlang::arg_match(tags, multiple = TRUE)
 
@@ -47,16 +49,21 @@ addr_standardize <- function(x,
 
   standard_tags <-
     purrr::map(tags, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
-    setNames(tags)
+    stats::setNames(tags)
 
   if (five_digit_zip && "ZipCode" %in% tags) standard_tags$ZipCode <- substr(standard_tags$ZipCode, 1, 5)
 
   if (expand_street_name_post_type) standard_tags$StreetNamePostType <- expand_post_type(tolower(standard_tags$StreetNamePostType))
 
   out <-
-    purrr::transpose(standard_tags) |>
-    purrr::map_chr(\(.) paste(na.omit(.), collapse = " ")) |>
-    tolower()
+    purrr::transpose(standard_tags)
+
+  if (collapse) {
+    out <-
+      out |>
+      purrr::map_chr(\(.) paste(stats::na.omit(.), collapse = " ")) |>
+      tolower()
+  }
 
   return(out)
 }
@@ -99,7 +106,7 @@ expand_post_type <- function(x) {
       "Trail" = c("tr", "tl"),
       "Way" = c("wy")
     ) |>
-    purrr::imap(\(.x, .i) setNames(c(tolower(.i), as.character(.x)), rep(.i, times = length(.x) + 1))) |>
+    purrr::imap(\(.x, .i) stats::setNames(c(tolower(.i), as.character(.x)), rep(.i, times = length(.x) + 1))) |>
     purrr::flatten()
   out <- names(lookup[match(tolower(x), lookup)])
   # replace unmatched with original input

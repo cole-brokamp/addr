@@ -15,7 +15,6 @@ Suggests:
     testthat (>= 3.0.0),
     digest
 Imports: 
-    glue,
     purrr,
     stringr,
     rlang

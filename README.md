@@ -66,24 +66,20 @@ addr_standardize(
 #> [5] "3333 burnet avenue cincinnati oh 45220"
 ```
 
-Use a hash representing the standardized address instead:
+Utilize options in `addr_standardize()` to extract specific address tags
+in a tidy manner; for example:
 
 ``` r
-addr_hash(
-  x = c(
-    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
-    "3333 bUrNeT Avenue Cincinnati OH 45220",
-    "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
-    "3333 Burnet Ave Cincinnati OH 45220",
-    "3333 Burnet Av. Cincinnati OH 45220"
-  )
-)
-#> [1] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
-#> [3] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
-#> [5] "da219816d9cb3e1bb53291312cfa1dfd"
+addr_standardize(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"),
+                 tags = c("AddressNumber", "StreetName", "StreetNamePostType"), collapse = FALSE) |>
+                 purrr::modify(as.data.frame) |>
+                 purrr::list_rbind()
+#>   AddressNumber StreetName StreetNamePostType
+#> 1           290     Ludlow             Avenue
+#> 2          3333     Burnet             Avenue
 ```
 
-For finer control, use `addr_tag()` to generate tagged address
+For finer control, use `addr_tag()` to generate all tagged address
 components:
 
 ``` r
@@ -99,4 +95,19 @@ addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cinc
 #>             "3333"           "Burnet"              "Ave"       "Cincinnati" 
 #>          StateName            ZipCode 
 #>               "OH"            "45219"
+```
+
+Use a hash representing the standardized address instead:
+
+``` r
+addr_hash(
+  x = c(
+    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
+    "3333 bUrNeT Avenue Cincinnati OH 45220",
+    "290 Ludlow Avenue Cincinnati OH 45220",
+    "290 ludlow Ave Cincinnati OH 45220"
+  )
+)
+#> [1] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
+#> [3] "4be935039d841a0986f11106166bb6fc" "4be935039d841a0986f11106166bb6fc"
 ```

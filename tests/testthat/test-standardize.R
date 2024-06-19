@@ -24,6 +24,39 @@ test_that("addr_standardize works with tricky addresses", {
     ))
 })
 
+test_that("addr_standardize can return a list of the tags by not collapsing", {
+  addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"), collapse = FALSE) |>
+    expect_equal(
+      list(
+        list(
+          AddressNumber = "3333", StreetName = "Burnet", StreetNamePostType = "Avenue",
+          PlaceName = "Cincinnati", StateName = "OH", ZipCode = "45219"
+        ),
+        list(
+          AddressNumber = "202", StreetName = "Riva Ridge", StreetNamePostType = "Court",
+          PlaceName = "Cincinnati", StateName = "OH", ZipCode = "45140"
+        )
+      )
+    )
+
+  addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"),
+    collapse = FALSE,
+    tags = c("AddressNumber", "StreetName", "StreetNamePostType")
+  ) |>
+    expect_equal(
+      list(
+        list(AddressNumber = "3333", StreetName = "Burnet", StreetNamePostType = "Avenue"),
+        list(AddressNumber = "202", StreetName = "Riva Ridge", StreetNamePostType = "Court")
+      )
+    )
+
+  addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"),
+    tags = c("AddressNumber", "StreetName", "StreetNamePostType")
+  ) |>
+    expect_equal(c("3333 burnet avenue", "202 riva ridge court"))
+
+})
+
 test_that("expand_post_type works", {
   expand_post_type(c("ave", "av", "avenue", "st", NA, "")) |>
     expect_equal(c("Avenue", "Avenue", "Avenue", "Street", NA, ""))

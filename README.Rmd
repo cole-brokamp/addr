@@ -59,6 +59,21 @@ addr_standardize(
 )
 ```
 
+Utilize options in `addr_standardize()` to extract specific address tags in a tidy manner; for example:
+
+```{r}
+addr_standardize(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"),
+                 tags = c("AddressNumber", "StreetName", "StreetNamePostType"), collapse = FALSE) |>
+				 purrr::modify(as.data.frame) |>
+				 purrr::list_rbind()
+```
+
+For finer control, use `addr_tag()` to generate all tagged address components:
+
+```{r}
+addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
+```
+
 Use a hash representing the standardized address instead:
 
 ```{r}
@@ -66,16 +81,8 @@ addr_hash(
   x = c(
     "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
     "3333 bUrNeT Avenue Cincinnati OH 45220",
-    "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
-    "3333 Burnet Ave Cincinnati OH 45220",
-    "3333 Burnet Av. Cincinnati OH 45220"
+	"290 Ludlow Avenue Cincinnati OH 45220",
+	"290 ludlow Ave Cincinnati OH 45220"
   )
 )
 ```
-
-For finer control, use `addr_tag()` to generate tagged address components:
-
-```{r}
-addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
-```
-
