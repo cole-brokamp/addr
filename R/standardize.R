@@ -1,25 +1,32 @@
-#' Address standardization
+#' Address standardization and hashdresses
 #'
-#' After cleaning and tagging addresses, specific tags are
-#' concatenated (separated by spaces) to create a harmonized address suitable
-#' for comparison and/or hashing.
-#' Specific tags are separate by spaces; e.g., `{AddressNumber} {StreetName} {StreetNamePostType}
+#' Convert messy, real-world mailing addresses into
+#' standardized addresses (`addr_standarize()`) and
+#' further hash these addresses (`addr_hash()`) for
+#' comparison and lookup. Specific tags are separated by spaces; e.g.,
+#' `{AddressNumber} {StreetName} {StreetNamePostType}
 #' {PlaceName} {StateName} {ZipCode}`.
 #' By default, all address tags are converted to lower case,
-#' street name post types are expanded (e.g., "str" to "street" and "ave" to "avenue"),
+#' street name post types are expanded
+#' (e.g., "str" to "street" and "ave" to "avenue"),
 #' and only the first five digits of the ZIP Code are used.
-#' If any address tags are missing (except for `StreetNamePostType`), then a missing
-#' standardized address will be returned.
+#' If any address tags are missing
+#' (except for `StreetNamePostType`), then a missing
+#' standardized address or hashdress will be returned.
 #' In the case of an address having more than one word for a tag
-#' (e.g., "Riva Ridge" for `StreetName`), then these are concatenated together, separated by a space
+#' (e.g., "Riva Ridge" for `StreetName`),
+#' then these are concatenated together, separated by a space
 #' in the order they appeared in the address.
+#' For `addr_hash()` addresses are standardized and then
+#' hashed using the md5 algorithm via `digest::hash()`
 #' @param x a character vector of address strings
 #' @param tags a character vector of tag names to be used, in order, to create the standardized address
 #' @param five_digit_zip logical; return only the first five digits of the parsed ZIP code?
 #' @param expand_street_name_post_type logical; use `expand_post_type()` to expand street type abbreviations
 #' @param clean_address_text logical; clean addresses prior to tagging with `addr_clean()`?
 #' @param collapse logical; combine standardized tags to output a single string per address
-#' @return a character vector of standardized address strings
+#' @return a character vector of standardized address strings or, if `collapse` is `FALSE`,
+#' a list of character vectors with address tags in `tags` for each address string in `x`
 #' @export
 #' @examples
 #' addr_standardize(

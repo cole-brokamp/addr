@@ -6,7 +6,7 @@ d <-
   tibble::as_tibble() |>
   select(parcel_id, address = parcel_address)
 
-d$addr <- addr_standardize(d$address, tags = c("AddressNumber", "StreetName", "StreetNamePostType"), five_digit_zip = FALSE)
+d$addr <- addr_standardize(d$address, tags = c("AddressNumber", "StreetName", "StreetNamePostType"))
 
 # add in city, state, and pseudo zipcode for matching
 

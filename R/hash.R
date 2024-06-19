@@ -1,9 +1,5 @@
 #' Address hashing (hashdress)
 #'
-#' Addresses are standardized (`addr_standardize()`) and then hashed using the md5 algorithm
-#' via `digest::hash()`
-#' @param x a character vector of address strings
-#' @return a character vector of hashdresses
 #' @export
 #' @examples
 #' addr_hash(c(
@@ -13,9 +9,14 @@
 #'   "224 Woolper Ave Cincinnati OH 45220",
 #'   "224 Woolper Av. Cincinnati OH 45220"
 #' ))
-addr_hash <- function(x) {
+#' @rdname addr_standardize
+addr_hash <- function(x,
+                      tags = c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName", "ZipCode"),
+                      five_digit_zip = TRUE,
+                      expand_street_name_post_type = TRUE,
+                      clean_address_text = TRUE) {
   rlang::check_installed("digest", "to create hashdresses.")
-  x_std <- addr_standardize(x)
+  x_std <- addr_standardize(x, tags = tags)
   x_hash <- vapply(x_std, \(.) digest::digest(., algo = "md5", serialize = FALSE), character(1), USE.NAMES = FALSE)
   # NA_character_ is still hashed; change these back to NA
   x_hash[x_hash == digest::digest(NA_character_, algo = "md5", serialize = FALSE)] <- NA_character_
