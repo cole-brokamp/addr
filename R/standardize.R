@@ -1,32 +1,17 @@
-#' Address standardization and hashdresses
+#' Address standardization
 #'
-#' Convert messy, real-world mailing addresses into
-#' standardized addresses (`addr_standarize()`) and
-#' further hash these addresses (`addr_hash()`) for
-#' comparison and lookup. Specific tags are separated by spaces; e.g.,
-#' `{AddressNumber} {StreetName} {StreetNamePostType}
-#' {PlaceName} {StateName} {ZipCode}`.
-#' By default, all address tags are converted to lower case,
-#' street name post types are expanded
-#' (e.g., "str" to "street" and "ave" to "avenue"),
-#' and only the first five digits of the ZIP Code are used.
-#' If any address tags are missing
-#' (except for `StreetNamePostType`), then a missing
-#' standardized address or hashdress will be returned.
-#' In the case of an address having more than one word for a tag
-#' (e.g., "Riva Ridge" for `StreetName`),
-#' then these are concatenated together, separated by a space
-#' in the order they appeared in the address.
-#' For `addr_hash()` addresses are standardized and then
-#' hashed using the md5 algorithm via `digest::hash()`
+#' Convert messy, real-world mailing addresses into standardized address tags for comparison and lookup. 
+#' By default, address strings are cleaned with `addr_clean()`, the ZIP codes are restricted to the first
+#' five digits, and the street name post types are expanded (e.g., "Ave" -> "Avenue").
+#' In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for `StreetName`),
+#' then these are concatenated together, separated by a space in the order they appeared in the address.
 #' @param x a character vector of address strings
 #' @param tags a character vector of tag names to be used, in order, to create the standardized address
-#' @param five_digit_zip logical; return only the first five digits of the parsed ZIP code?
-#' @param expand_street_name_post_type logical; use `expand_post_type()` to expand street type abbreviations
-#' @param clean_address_text logical; clean addresses prior to tagging with `addr_clean()`?
-#' @param collapse logical; combine standardized tags to output a single string per address
-#' @return a character vector of standardized address strings or, if `collapse` is `FALSE`,
-#' a list of character vectors with address tags in `tags` for each address string in `x`
+#' (see `addr_tag()` for all possibilities)
+#' @param clean_address_text logical; use `clean_address_text()` to clean addresses prior to tagging?
+#' @param expand_street_name_post_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
+#' @param five_digit_zip logical; return only the first five digits of the parsed `ZipCode` tag?
+#' @return a list the same length as x, where each item is a character vector of address tags specified in `tags`
 #' @export
 #' @examples
 #' addr_standardize(
@@ -41,10 +26,9 @@
 #' )
 addr_standardize <- function(x,
                              tags = c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName", "ZipCode"),
-                             five_digit_zip = TRUE,
-                             expand_street_name_post_type = TRUE,
                              clean_address_text = TRUE,
-                             collapse = TRUE) {
+                             expand_street_name_post_type = TRUE,
+                             five_digit_zip = TRUE) {
   x_tags <- addr_tag(x, clean_address_text = clean_address_text)
   tags <- rlang::arg_match(tags, multiple = TRUE)
 
@@ -62,15 +46,7 @@ addr_standardize <- function(x,
 
   if (expand_street_name_post_type) standard_tags$StreetNamePostType <- expand_post_type(tolower(standard_tags$StreetNamePostType))
 
-  out <-
-    purrr::transpose(standard_tags)
-
-  if (collapse) {
-    out <-
-      out |>
-      purrr::map_chr(\(.) paste(stats::na.omit(.), collapse = " ")) |>
-      tolower()
-  }
+  out <- purrr::transpose(standard_tags)
 
   return(out)
 }

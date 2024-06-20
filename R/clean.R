@@ -5,14 +5,14 @@
 #' @return a vector of cleaned addresses
 #' @export
 #' @examples
-#' addr_clean(c(
+#' clean_address_text(c(
 #'   "3333 Burnet Ave Cincinnati OH 45219",
 #'   "33_33 Burnet Ave. Cincinnati OH 45219",
 #'   "33\\33 B\"urnet Ave; Ci!ncinn&*ati OH 45219",
 #'   "3333 Burnet Ave Cincinnati OH 45219",
 #'   "33_33 Burnet Ave. Cincinnati OH 45219"
 #' ))
-addr_clean <- function(.x) {
+clean_address_text <- function(.x) {
   .x |>
     stringr::str_replace_all(stringr::fixed("\\"), "") |>
     stringr::str_replace_all(stringr::fixed("\""), "") |>

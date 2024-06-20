@@ -14,7 +14,7 @@ addr_tag(x, clean_address_text = TRUE)
 
 \item{x}{a character vector of addresses}
 
-\item{clean_address_text}{logical; clean addresses prior to tagging with \code{addr_clean()}?}
+\item{clean_address_text}{logical; use clean_address_text() to clean addresses prior to tagging?}
 }
 \value{
 a list, the same length as x, of named character vectors of address component tags;

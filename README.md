@@ -14,17 +14,11 @@ status](https://www.r-pkg.org/badges/version/hashdress)](https://CRAN.R-project.
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of addr is to clean, parse, harmonize, and hash messy
-real-world addresses in R.
-
 Addresses that were not validated at the time of collection are often
 heterogenously formatted, making them difficult to compare or link to
-other sets of addresses. The addr package is designed to (1) clean
-character strings of addresses, (2) use the `usaddress` library to tag
-address components, (3) expand common street type abbreviations, and (4)
-paste together select components to create a standardized address.
-Standardized addresses can be hashed to create hashdresses that can be
-used to merge with other sets of addresses.
+other sets of addresses. The goal of addr is to clean, parse, and
+standardize messy, real-world addresses in R to use for further linkage
+and lookup.
 
 ## Installation
 
@@ -46,68 +40,44 @@ one using [rustup](https://www.rust-lang.org/tools/install).
 library(addr)
 ```
 
-Transform messy, real-world addresses into a character vector of
-standardized address:
-
 ``` r
-addr_standardize(
-  x = c(
-    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
-    "3333 bUrNeT Avenue Cincinnati OH 45220",
-    "3333 Burnet Avenue Apt #2 Cincinnati OH 45220",
-    "3333 Burnet Ave Cincinnati OH 45220",
-    "3333 Burnet Av. Cincinnati OH 45220"
-  )
-)
-#> [1] "3333 burnet avenue cincinnati oh 45220"
-#> [2] "3333 burnet avenue cincinnati oh 45220"
-#> [3] "3333 burnet avenue cincinnati oh 45220"
-#> [4] "3333 burnet avenue cincinnati oh 45220"
-#> [5] "3333 burnet avenue cincinnati oh 45220"
-```
-
-Utilize options in `addr_standardize()` to extract specific address tags
-in a tidy manner; for example:
-
-``` r
-addr_standardize(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"),
-                 tags = c("AddressNumber", "StreetName", "StreetNamePostType"), collapse = FALSE) |>
-                 purrr::modify(as.data.frame) |>
-                 purrr::list_rbind()
-#>   AddressNumber StreetName StreetNamePostType
-#> 1           290     Ludlow             Avenue
-#> 2          3333     Burnet             Avenue
-```
-
-For finer control, use `addr_tag()` to generate all tagged address
-components:
-
-``` r
-addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))
+addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
 #> [[1]]
-#>       AddressNumber          StreetName  StreetNamePostType       OccupancyType 
-#>               "290"            "Ludlow"            "Avenue"               "Apt" 
-#> OccupancyIdentifier           PlaceName           StateName             ZipCode 
-#>                 "2"        "Cincinnati"                "OH"             "45220" 
+#> [[1]]$AddressNumber
+#> [1] "3333"
+#> 
+#> [[1]]$StreetName
+#> [1] "Burnet"
+#> 
+#> [[1]]$StreetNamePostType
+#> [1] "Avenue"
+#> 
+#> [[1]]$PlaceName
+#> [1] "Cincinnati"
+#> 
+#> [[1]]$StateName
+#> [1] "OH"
+#> 
+#> [[1]]$ZipCode
+#> [1] "45219"
+#> 
 #> 
 #> [[2]]
-#>      AddressNumber         StreetName StreetNamePostType          PlaceName 
-#>             "3333"           "Burnet"              "Ave"       "Cincinnati" 
-#>          StateName            ZipCode 
-#>               "OH"            "45219"
-```
-
-Use a hash representing the standardized address instead:
-
-``` r
-addr_hash(
-  x = c(
-    "3333 Burnet Avenue Apt 2 Cincinnati OH 45220",
-    "3333 bUrNeT Avenue Cincinnati OH 45220",
-    "290 Ludlow Avenue Cincinnati OH 45220",
-    "290 ludlow Ave Cincinnati OH 45220"
-  )
-)
-#> [1] "da219816d9cb3e1bb53291312cfa1dfd" "da219816d9cb3e1bb53291312cfa1dfd"
-#> [3] "4be935039d841a0986f11106166bb6fc" "4be935039d841a0986f11106166bb6fc"
+#> [[2]]$AddressNumber
+#> [1] "202"
+#> 
+#> [[2]]$StreetName
+#> [1] "Riva Ridge"
+#> 
+#> [[2]]$StreetNamePostType
+#> [1] "Court"
+#> 
+#> [[2]]$PlaceName
+#> [1] "Cincinnati"
+#> 
+#> [[2]]$StateName
+#> [1] "OH"
+#> 
+#> [[2]]$ZipCode
+#> [1] "45140"
 ```
