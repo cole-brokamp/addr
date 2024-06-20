@@ -14,11 +14,9 @@ install_cagis_data <- function(cagis_data_url) {
   return(dest)
 }
 
-d_cagis_address <-
-  sf::st_read(
-    dsn = install_cagis_data("https://www.cagis.org/Opendata/Quarterly_GIS_Data/CAGISOpenDataSpring2024.gdb.zip"),
-    layer = "Addresses"
-  ) |>
+ca <-
+  install_cagis_data("https://www.cagis.org/Opendata/Quarterly_GIS_Data/CAGISOpenDataSpring2024.gdb.zip") |>
+  sf::st_read(layer = "Addresses") |>
   sf::st_drop_geometry() |>
   select(PARCELID, FULLMAILADR, LATITUDE, LONGITUDE) |>
   transmute(
@@ -28,23 +26,14 @@ d_cagis_address <-
   ) |>
   tibble::as_tibble()
 
-d_cagis_address$parcel_addr <- addr_standardize(d_cagis_address$parcel_address, collapse = FALSE)
+ca_addr <-
+  ca$parcel_address |>
+  addr_standardize() |>
+  purrr::transpose() |>
+  tibble::as_tibble() |>
+  mutate(across(everything(), as.character))
 
-pryr::object_size(d_cagis_address)
-
-d_cagis_address$parcel_addr
-
-purrr::modify(as.data.frame) |>
-  purrr::list_rbind()
-
-
-
-
-
-
-
-
-
+ca <- purrr::list_cbind(list(ca, ca_addr))
 
 # read in messy real-world addresses
 d <-
@@ -59,9 +48,15 @@ d <-
       STATE = readr::col_character(),
       ZIP = readr::col_character()
     )
-  )
-
-d_parcel <-
-  d |>
+  ) |>
   filter(substr(ZIP, 1, 5) %in% cincy::zcta_tigris_2020$zcta_2020) |>
   tidyr::unite("raw_address", c(ADDRESS, CITY, STATE, ZIP), sep = " ", na.rm = TRUE)
+
+d_addr <-
+  d$raw_address |>
+  addr_standardize() |>
+  purrr::transpose() |>
+  tibble::as_tibble() |>
+  mutate(across(everything(), as.character))
+
+d <- purrr::list_cbind(list(d, d_addr))
