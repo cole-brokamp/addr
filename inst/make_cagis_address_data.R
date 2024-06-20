@@ -60,3 +60,29 @@ d_addr <-
   mutate(across(everything(), as.character))
 
 d <- purrr::list_cbind(list(d, d_addr))
+
+library(fuzzyjoin)
+
+# TODO calculate stringsim based on number of edits (faster method than osm??)
+# TODO use number of edits for zipcode first to narrow it down, then use osm + soundex for streetname and number as identical
+
+the_join <-
+  fuzzy_join(sample_n(d, 100), ca,
+  by = c("AddressNumber", "StreetName", "ZipCode"),
+  match_fun = list(
+    AddressNumber = \(.x, .y) as.integer(.x) == as.integer(.y),
+    StreetName = \(.x, .y) stringdist::stringdist(.x, .y, method = "osa") > 0.5,
+    ZipCode = \(.x, .y) .x == .y
+  ),
+  mode = "left"
+)
+
+ca[
+  purrr::map_dbl(
+    d$StreetName[1:100],
+    \(.) which.max(stringdist::stringsim(tolower(.), tolower(ca$StreetName), method = "osa")),
+    .progress = TRUE
+  ),
+]
+
+ca[30, ]
