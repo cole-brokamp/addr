@@ -85,6 +85,7 @@ expand_post_type <- function(x) {
       "Road" = c("rd"),
       "Route" = c("rt"),
       "Street" = c("st", "str"),
+      "Square" = c("sq"),
       "Terrace" = c("te", "ter", "terr", "trce"),
       "Trail" = c("tr", "tl"),
       "Way" = c("wy")
