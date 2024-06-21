@@ -1,9 +1,7 @@
 devtools::load_all()
 library(dplyr, warn.conflicts = FALSE)
 
-tags_for_hashdress <- c("AddressNumber", "StreetName", "StreetNamePostType")
-
-# load reference addresses from CAGIS
+# (create and) load reference addresses from CAGIS
 if (!fs::file_exists(fs::path_package("addr", "CAGISOpenDataSpring2024.gdb"))) {
   # TODO fix the conditional for the if statement (doesn't work on first try w/o pre-downloaded file)
   tmp <- tempfile(fileext = ".zip")
