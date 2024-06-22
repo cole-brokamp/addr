@@ -26,6 +26,7 @@ ca <-
   filter(STATUS %in% c("ASSIGNED", "USING")) |>
   filter(ORPHANFLG == "N") |>
   filter(!ADDRTYPE %in% c("MM", "PAR", "PRJ", "CTW", "LOT", "MIS", "RR", "TBA")) |>
+  # TODO should these be called cagis_address, etc so output is clearer?
   transmute(
     address = FULLMAILADR,
     address_place = BLDGPLACE,
@@ -45,6 +46,7 @@ ca_addr <-
 ca <- purrr::list_cbind(list(ca, ca_addr))
 
 # read in messy real-world addresses and create cleaned address in one string
+# TODO add back in date for looking at the end (and for residential addr structure function??)
 d <-
   readr::read_csv(
     "../riseup_geomarker_pipeline/data/DR1767_r2.csv",

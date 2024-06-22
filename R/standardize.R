@@ -61,6 +61,7 @@ addr_standardize <- function(x,
 #' @examples
 #' expand_post_type(c("ave", "av", "Avenue", "tl"))
 expand_post_type <- function(x) {
+  x <- tolower(x)
   lookup <-
     list(
       "Avenue" = c("av", "ave", "avnue"),
