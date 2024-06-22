@@ -1,6 +1,8 @@
 #' Tag components of an address string
-#' The address components are based upon the [United States Thoroughfare,
-#' Landmark, and Postal Address Data Standard](http://www.urisa.org/advocacy/united-states-thoroughfare-landmark-and-postal-address-data-standard)
+#' The address components are tagged using a [rust port](https://github.com/boydjohnson/usaddress-rs) of
+#' [usaddress](https://github.com/datamade/usaddress).
+#' Component names are based upon the [United States Thoroughfare,
+#' Landmark, and Postal Address Data Standard](https://www.fgdc.gov/standards/projects/address-data).
 #' @param x a character vector of addresses
 #' @param clean_address_text logical; use clean_address_text() to clean addresses prior to tagging?
 #' @return a list, the same length as x, of named character vectors of address component tags;

@@ -2,7 +2,6 @@
 % Please edit documentation in R/extendr-wrappers.R
 \docType{package}
 \name{addr-package}
-\alias{addr}
 \alias{addr-package}
 \title{addr: Clean, Parse, Harmonize, and Hash Messy Real-World Addresses}
 \description{

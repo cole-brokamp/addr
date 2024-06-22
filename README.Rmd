@@ -41,10 +41,12 @@ addr requires a working [Rust](https://www.rust-lang.org/learn/get-started) tool
 
 ## Example
 
+The `addr` package provides the `addr` R object, which stores standardized address tags, but acts like a usual vector in R:
+
 ```{r example}
 library(addr)
 ```
 
 ```{r}
-addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
+addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
 ```

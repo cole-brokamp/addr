@@ -25,7 +25,9 @@ and are each named based on inferred address labels (see Details)
 Return list of lists of address tags to R.
 
 Tag components of an address string
-The address components are based upon the \href{http://www.urisa.org/advocacy/united-states-thoroughfare-landmark-and-postal-address-data-standard}{United States Thoroughfare, Landmark, and Postal Address Data Standard}
+The address components are tagged using a \href{https://github.com/boydjohnson/usaddress-rs}{rust port} of
+\href{https://github.com/datamade/usaddress}{usaddress}.
+Component names are based upon the \href{https://www.fgdc.gov/standards/projects/address-data}{United States Thoroughfare, Landmark, and Postal Address Data Standard}.
 }
 \details{
 Possible address labels include:

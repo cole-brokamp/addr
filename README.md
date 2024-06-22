@@ -36,48 +36,15 @@ one using [rustup](https://www.rust-lang.org/tools/install).
 
 ## Example
 
+The `addr` package provides the `addr` R object, which stores
+standardized address tags, but acts like a usual vector in R:
+
 ``` r
 library(addr)
 ```
 
 ``` r
-addr_standardize(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
-#> [[1]]
-#> [[1]]$AddressNumber
-#> [1] "3333"
-#> 
-#> [[1]]$StreetName
-#> [1] "Burnet"
-#> 
-#> [[1]]$StreetNamePostType
-#> [1] "Avenue"
-#> 
-#> [[1]]$PlaceName
-#> [1] "Cincinnati"
-#> 
-#> [[1]]$StateName
-#> [1] "OH"
-#> 
-#> [[1]]$ZipCode
-#> [1] "45219"
-#> 
-#> 
-#> [[2]]
-#> [[2]]$AddressNumber
-#> [1] "202"
-#> 
-#> [[2]]$StreetName
-#> [1] "Riva Ridge"
-#> 
-#> [[2]]$StreetNamePostType
-#> [1] "Court"
-#> 
-#> [[2]]$PlaceName
-#> [1] "Cincinnati"
-#> 
-#> [[2]]$StateName
-#> [1] "OH"
-#> 
-#> [[2]]$ZipCode
-#> [1] "45140"
+addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
+#> <addr[2]>
+#> [1] 3333 Burnet Cincinnati OH 45219    202 Riva Ridge Cincinnati OH 45140
 ```
