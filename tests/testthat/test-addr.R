@@ -14,5 +14,17 @@ test_that("addr() works", {
     )
 })
 
-# TODO test printing:
-addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
+# test casting to character
+test_that("addr can cast to character", {
+  addr(c(
+    "3333 Burnet Ave Cincinnati OH 45219",
+    "202 Riva Ridge Ct Cincinnati OH 45140",
+    "3333 Burnet Cincinnati OH 45219"
+  )) |>
+    vec_cast.addr.character() |>
+    expect_equal(c(
+      "3333 Burnet Avenue Cincinnati OH 45219",
+      "202 Riva Ridge Court Cincinnati OH 45140",
+      "3333 Burnet Cincinnati OH 45219"
+    ))
+})

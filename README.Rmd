@@ -50,3 +50,10 @@ library(addr)
 ```{r}
 addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
 ```
+
+Under the hood, an `addr` object keeps a record of the tagged and standardized address components so that they can be used with other functions. To inspect or use them directly:
+
+```{r}
+addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140")) |>
+  as.data.frame()
+```

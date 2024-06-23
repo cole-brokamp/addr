@@ -46,5 +46,18 @@ library(addr)
 ``` r
 addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140"))
 #> <addr[2]>
-#> [1] 3333 Burnet Cincinnati OH 45219    202 Riva Ridge Cincinnati OH 45140
+#> [1] 3333 Burnet Avenue Cincinnati OH 45219  
+#> [2] 202 Riva Ridge Court Cincinnati OH 45140
+```
+
+Under the hood, an `addr` object keeps a record of the tagged and
+standardized address components so that they can be used with other
+functions. To inspect or use them directly:
+
+``` r
+addr(c("3333 Burnet Ave Cincinnati OH 45219", "202 Riva Ridge Ct Cincinnati OH 45140")) |>
+  as.data.frame()
+#>   street_number street_name street_type       city state zip_code
+#> 1          3333      burnet      avenue cincinnati    oh    45219
+#> 2           202  riva ridge       court cincinnati    oh    45140
 ```

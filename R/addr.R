@@ -30,7 +30,9 @@ addr <- function(x = character(),
   toi <- 
     purrr::map(toi_names, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
       setNames(toi_names)
-  if (expand_street_type) toi$StreetNamePostType <- expand_post_type(toi$StreetNamePostType)
+  if (expand_street_type) {
+    toi$StreetNamePostType <- expand_post_type(toi$StreetNamePostType)
+  }
   if (clean_zip_code && "ZipCode" %in% toi_names) {
     toi$ZipCode <- substr(toi$ZipCode, 1, 5)
     # TODO change to NA if not all numeric digits: grepl("^[[:digit:]]+$", toi$ZipCode)
@@ -79,24 +81,27 @@ methods::setOldClass(c("addr", "vctrs_vctr"))
 
 #' @export
 vec_cast.addr.character <- function(x, to, ...) {
-  with(vec_data(x), {
-    paste(
-      street_number,
-      stringr::str_to_title(street_name),
-      ## stringr::str_to_title(streeet_type),
-      stringr::str_to_title(city),
-      stringr::str_to_upper(state),
-      zip_code
+  xd <- vec_data(x) 
+  out <- paste(
+      xd$street_number,
+      stringr::str_to_title(xd$street_name),
+      stringr::str_to_title(xd$street_type),
+      stringr::str_to_title(xd$city),
+      stringr::str_to_upper(xd$state),
+      xd$zip_code
     )
-  })
-  # TODO deal with missing components here?
+  gsub(" NA", "", out, fixed = TRUE)
 }
 
 #' @export
 format.addr <- function(x, ...) {
-  browser()
   vec_cast.addr.character(x)
   ## vec_cast(x, character())
+}
+
+#' @export
+as.data.frame.addr <- function(x, ...) {
+  vctrs::vec_data(x)
 }
 
 
