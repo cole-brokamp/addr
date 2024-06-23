@@ -11,7 +11,7 @@
 #' then these are concatenated together, separated by a space in the order they appeared in the address.
 #' @param x a character vector of address strings
 #' @param clean_address_text logical; use `clean_address_text()` to clean addresses prior to tagging?
-#' @param expand_street_name_post_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
+#' @param expand_street_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
 #' @param clean_zip_code logical; truncate tagged ZIP Code to 5 characters and set to missing if any of them are not digits?
 #' @export
 #' @examples
@@ -29,7 +29,7 @@ addr <- function(x = character(),
   toi_names <- c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName", "ZipCode")
   toi <- 
     purrr::map(toi_names, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
-      setNames(toi_names)
+      stats::setNames(toi_names)
   if (expand_street_type) {
     toi$StreetNamePostType <- expand_post_type(toi$StreetNamePostType)
   }
@@ -76,6 +76,7 @@ new_addr <- function(street_number = integer(),
   )
 }
 
+#' @importFrom methods setOldClass
 # for compatibility with the S4 system
 methods::setOldClass(c("addr", "vctrs_vctr"))
 

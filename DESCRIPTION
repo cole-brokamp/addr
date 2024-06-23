@@ -17,8 +17,8 @@ Imports:
     purrr,
     stringr,
     rlang,
-    methods,
     vctrs,
+    methods,
     zeallot
 SystemRequirements: Cargo (Rust's package manager), rustc
 Config/testthat/edition: 3

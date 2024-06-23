@@ -16,9 +16,9 @@ addr(
 
 \item{clean_address_text}{logical; use \code{clean_address_text()} to clean addresses prior to tagging?}
 
-\item{clean_zip_code}{logical; truncate tagged ZIP Code to 5 characters and set to missing if any of them are not digits?}
+\item{expand_street_type}{logical; use \code{expand_post_type()} to expand \code{StreetNamePostType} tags?}
 
-\item{expand_street_name_post_type}{logical; use \code{expand_post_type()} to expand \code{StreetNamePostType} tags?}
+\item{clean_zip_code}{logical; truncate tagged ZIP Code to 5 characters and set to missing if any of them are not digits?}
 }
 \description{
 An addr object is created by converting messy, real-world mailing addresses in a
