@@ -10,9 +10,9 @@
 #' In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for `StreetName`),
 #' then these are concatenated together, separated by a space in the order they appeared in the address.
 #' @param x a character vector of address strings
-#' @param clean_address_text logical; use `clean_address_text()` to clean addresses prior to tagging?
+#' @param clean_address_text logical; use `clean_address_text()` to clean address text prior to tagging?
 #' @param expand_street_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
-#' @param clean_zip_code logical; truncate tagged ZIP Code to 5 characters and set to missing if any of them are not digits?
+#' @param clean_zip_code logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?
 #' @export
 #' @examples
 #' addr(c("3333 Burnet Ave Cincinnati OH 45219", "1324 Burnet Ave Cincinnati OH 45219"))
@@ -34,11 +34,11 @@ addr <- function(x = character(),
     toi$StreetNamePostType <- expand_post_type(toi$StreetNamePostType)
   }
   if (clean_zip_code && "ZipCode" %in% toi_names) {
+    toi$ZipCode <- gsub("[^0-9-]", "", toi$ZipCode)
     toi$ZipCode <- substr(toi$ZipCode, 1, 5)
-    # TODO change to NA if not all numeric digits: grepl("^[[:digit:]]+$", toi$ZipCode)
   }
   new_addr(
-    street_number = vec_cast(as.numeric(toi$AddressNumber), integer()),
+    street_number = vec_cast(as.numeric(toi$AddressNumber), numeric()),
     street_name = vec_cast(toi$StreetName, character()),
     street_type = vec_cast(toi$StreetNamePostType, character()),
     city = vec_cast(toi$PlaceName, character()),
@@ -47,20 +47,20 @@ addr <- function(x = character(),
   )
 }
 
-new_addr <- function(street_number = integer(),
+new_addr <- function(street_number = numeric(),
                      street_name = character(),
                      street_type = character(),
                      city = character(),
                      state = character(),
                      zip_code = character()) {
-  if (!rlang::is_integer(street_number)) rlang::abort("`street_number` must be an integer vector.")
+  if (!rlang::is_double(street_number)) rlang::abort("`street_number` must be a numeric vector.")
   if (!rlang::is_character(street_name)) rlang::abort("`street_name` must be a character vector.")
   if (!rlang::is_character(street_type)) rlang::abort("`street_type` must be a character vector.")
   if (!rlang::is_character(city)) rlang::abort("`city` must be a character vector.")
   if (!rlang::is_character(state)) rlang::abort("`state` must be a character vector.")
   if (!rlang::is_character(zip_code)) rlang::abort("`zip_code` must be a character vector.")
-  if (!all(grepl("^[[:digit:]]+$", zip_code))) rlang::abort("`zip_code` must not contain non-digit characters.")
-  if (any(nchar(zip_code) > 5)) rlang::abort("`zip_code` must not be longer than five characters")
+  if (any(grepl("[^0-9-]", zip_code))) rlang::abort("`zip_code` must contain only digit (or hyphen) characters.")
+  if (any(!is.na(zip_code) & nchar(zip_code) > 5)) rlang::abort("`zip_code` must not be longer than five characters")
   c(street_number, street_name, street_type, city, state, zip_code) %<-%
     vec_recycle_common(street_number, street_name, street_type, city, state, zip_code)
   new_rcrd(
