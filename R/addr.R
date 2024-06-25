@@ -47,6 +47,8 @@ addr <- function(x = character(),
   )
 }
 
+# TODO make addr faster by deduplicating input character vector
+
 new_addr <- function(street_number = numeric(),
                      street_name = character(),
                      street_type = character(),
@@ -103,6 +105,14 @@ format.addr <- function(x, ...) {
 #' @export
 as.data.frame.addr <- function(x, ...) {
   vctrs::vec_data(x)
+}
+
+#' @export
+as_addr <- function(x) {
+  if (inherits(x, "addr")) {
+    return(x)
+  }
+  addr(x)
 }
 
 
