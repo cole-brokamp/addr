@@ -10,7 +10,7 @@
 #' @return a list of matching reference addr vectors for each addr in x
 #' @export
 addr_match <- function(x, ref_addr) {
-  ia <- na.omit(unique(as_addr(unique(x))))
+  ia <- stats::na.omit(unique(as_addr(unique(x))))
   ra <- as_addr(ref_addr)
   matched_zips <-
     addr_match_zip(ia, ra) |>
@@ -38,10 +38,10 @@ addr_match_zip <- function(input_addr, ref_addr) {
   match_lookup <-
     stringdist::stringdistmatrix(ia_zips, ra_zips, method = "osa") |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 0)) |>
-    setNames(ia_zips)
+    stats::setNames(ia_zips)
   the_matches <- match_lookup[vctrs::field(input_addr, "zip_code")]
   lapply(the_matches, \(.) ra_zips[.]) |>
-    setNames(NULL)
+    stats::setNames(NULL)
 }
 
 # returns a list of possible addr matches in ref_addr for each addr in input_addr
@@ -66,6 +66,6 @@ addr_match_line_one <- function(input_addr, ref_addr) {
   out <-
     purrr::map2(street_matches, number_matches, intersect) |>
     purrr::map(\(.) ref_addr[.]) |>
-    setNames(vec_cast.addr.character(input_addr))
+    stats::setNames(vec_cast.addr.character(input_addr))
   return(out)
 }

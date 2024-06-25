@@ -107,6 +107,9 @@ as.data.frame.addr <- function(x, ...) {
   vctrs::vec_data(x)
 }
 
+#' coerce a character vector to an addr vector
+#' @param x a character vector or addr vector
+#' @return an addr vector
 #' @export
 as_addr <- function(x) {
   if (inherits(x, "addr")) {

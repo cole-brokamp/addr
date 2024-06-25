@@ -1,7 +1,7 @@
 devtools::load_all()
 library(dplyr, warn.conflicts = FALSE)
 
-d <-
+input_data <-
   readr::read_csv(
     "../riseup_geomarker_pipeline/data/DR1767_r2.csv",
     na = c("NA", "-", "NULL", "null"),
@@ -18,3 +18,24 @@ d <-
   mutate(clean_address = clean_address_text(raw_address)) |>
   filter(!clean_address == "") |>
   mutate(addr = addr(clean_address))
+
+# randomly select one address per patient in a subpopulation for this example
+set.seed(1)
+d <-
+  input_data |>
+  group_by(MRN) |>
+  slice_sample(n = 1) |>
+  ungroup() |>
+  slice_sample(prop = 0.1)
+nrow(d)
+
+d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$addr)
+
+## d <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) !is.null(.)))
+## nrow(d)
+
+# NULL addr_matches means the zip code wasn't matched at all in the reference set
+# addr[0] means the zip code did match in the reference set, but no matches were found
+d_no_match <- filter(d, purrr::map_lgl(cagis_addr_matches, vctrs::vec_is_empty))
+d_single_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) == 1))
+d_multi_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) > 1))
