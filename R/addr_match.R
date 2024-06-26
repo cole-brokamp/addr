@@ -46,20 +46,19 @@ addr_match_zip <- function(input_addr, ref_addr) {
 
 # returns a list of possible addr matches in ref_addr for each addr in input_addr
 # output is named by casting input_addr to character
-# TODO include street_prefix? (missing things like State Rt for street names...)
 addr_match_line_one <- function(input_addr, ref_addr) {
   street_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_name"),
       vctrs::field(ref_addr, "street_name")
     ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. <= 1))
+    apply(MARGIN = 1, FUN = \(.) which(. <= 1), simplify = FALSE)
   number_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_number"),
       vctrs::field(ref_addr, "street_number"),
     ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. <= 0))
+    apply(MARGIN = 1, FUN = \(.) which(. <= 0), simplify = FALSE)
   if (length(street_matches) == 0 | length(number_matches) == 0) {
     return(list(rep(addr(), times = length(input_addr))))
   }

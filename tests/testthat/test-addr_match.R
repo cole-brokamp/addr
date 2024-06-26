@@ -1,0 +1,25 @@
+test_that("addr_match works", {
+
+  my_addresses <- c(
+    "781 GREENWOOD AVE APT 1 CINCINNATI OHIO 45229",
+    "515 FOREST AVE CINCINNATI OHIO 45229",
+    "1540 DUDLEY WALK APT F CINCINNATI OHIO 45214",
+    "3333 BURNET AVE CINCINNATI OH 45219",
+    "3333 BURNET AVE CINCINNATI OH 45229",
+    "806 BLAIR AVE APT 12 CINCINNATI OHIO 45229",
+    "300 OAK CREEK CT 13 FAIRFIELD OHIO 45014",
+    "5130 RAPID RUN RD CINCINNATI OHIO 45238",
+    "5131 RAPID RUN RD CINCINNATI OHIO 45238",
+    "2583 RIVERSIDE DR CINCINNATI OHIO 45202",
+    "7839 DAWN RD APT 6 CINCINNATI OHIO 45237",
+    "222 E CENTRAL PKWY CINCINNATI OHIO 45202", # JFS
+    "4571 TIMBERLAKE DR BATAVIA OHIO 45103", # outside reference addr zip codes
+    "31 HIGHRIDGE DR LOVELAND OHIO 45140",
+    "117 12TH ST E CINCINNATI, OH 45202" # Greater Cinti Coalition for The Homeless
+  )
+
+  cagis_matches <- addr_match(addr(my_addresses), cagis_addr$cagis_addr)
+
+  expect_type(cagis_matches, "list")
+  expect_snapshot(cagis_matches)
+})
