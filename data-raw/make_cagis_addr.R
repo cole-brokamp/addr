@@ -28,12 +28,12 @@ cagis_addr <-
   filter(ORPHANFLG == "N") |>
   filter(!ADDRTYPE %in% c("MM", "PAR", "PRJ", "CTW", "LOT", "MIS", "RR", "TBA")) |>
   transmute(
-    address = FULLMAILADR,
-    addr = addr(address),
+    cagis_address = FULLMAILADR,
+    cagis_addr = addr(cagis_address),
     cagis_address_place = BLDGPLACE,
     cagis_address_type = ADDRTYPE,
-    s2 = s2::as_s2_cell(s2::s2_geog_point(LONGITUDE, LATITUDE)),
-    parcel_id = PARCELID,
+    cagis_s2 = s2::as_s2_cell(s2::s2_geog_point(LONGITUDE, LATITUDE)),
+    cagis_parcel_id = PARCELID,
     cagis_is_condo = CONDOFLG %in% c("Y")
   )
 
