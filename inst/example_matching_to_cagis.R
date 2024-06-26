@@ -17,8 +17,7 @@ d <-
   tidyr::unite("raw_address", c(ADDRESS, CITY, STATE, ZIP), sep = " ", na.rm = TRUE) |>
   mutate(clean_address = clean_address_text(raw_address)) |>
   select(-raw_address) |>
-  filter(!clean_address == "") |>
-  mutate(addr = addr(clean_address))
+  filter(!clean_address == "")
 
 # randomly select one address from 10% of all patients
 d <- d |>
@@ -27,10 +26,11 @@ d <- d |>
   ungroup() |>
   slice_sample(prop = 0.1)
 
-# use addr::cagis_addr reference addresses included with the package
-d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$cagis_addr)
+# convert address character strings into an addr vector
+d$addr <- addr(d$clean_address)
 
-print(d, n = 100)
+# match with addr::cagis_addr reference addresses included in the package
+d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$cagis_addr)
 
 # define match result category
 d <- d |>
@@ -49,16 +49,14 @@ d <- d |>
 
 summary(d$addr_match_result)
 
+# inspect multi_matches manually
 d |>
   filter(addr_match_result == "multi_match") |>
   select(clean_address, cagis_addr_matches) |>
   tibble::deframe()
 
-## street names shorter than 4 characters should not be considered a match unless oas distance == 0
-## (e.g., "117 12th Street" and "117 13th Street")
-
-## "Forestview Court" should not match with "Forestview Lane" in the same zipcode; use other dist instead of osa?
-
+# retain only single matches and use a 
+# hacky workaround to join with cagis_addr on addr by casting to character
 matched_addr_data <-
   d |>
   filter(addr_match_result %in% c("single_match")) |>
