@@ -37,4 +37,4 @@ cagis_addr <-
     cagis_is_condo = CONDOFLG %in% c("Y")
   )
 
-usethis::use_data(cagis_addr, overwrite = TRUE)
+usethis::use_data(cagis_addr, overwrite = TRUE, compress = "xz")

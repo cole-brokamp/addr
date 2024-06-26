@@ -11,15 +11,15 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 cagis_addr
 }
 \description{
-An example tibble created from the CAGIS addresses with an addr vector column. See \code{data-raw/make_cagis_addr.R} for details.
-Addresses are filtered out based on some criteria:
+An example tibble created from the CAGIS addresses with pre-calculated \code{addr} vector column.
+See \code{data-raw/make_cagis_addr.R} for source code to create data, including filtering criteria:
 }
 \details{
 \itemize{
 \item use only addresses that have \code{STATUS} of \code{ASSIGNED} or \code{USING} and are not orphaned (\code{ORPHANFLG == "N"})
 \item omit addresses with \code{ADDRTYPE}s that are milemarkers (\code{MM}), parks (\code{PAR}), infrastructure projects (\code{PRJ}),
 cell towers (\code{CTW}), vacant or commercial lots (\code{LOT}), and other miscellaneous non-residential addresses (\code{MIS}, \code{RR}, \code{TBA})
-\item s2 cell derived from LONGITUDE and LATITUDE fields in CAGIS address database
+\item s2 cell is derived from LONGITUDE and LATITUDE fields in CAGIS address database
 }
 }
 \keyword{datasets}

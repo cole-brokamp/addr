@@ -29,6 +29,7 @@ d <-
   slice_sample(prop = 0.1)
 nrow(d)
 
+# use addr::cagis_addr reference addresses included with the package
 d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$addr)
 
 ## d <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) !is.null(.)))
@@ -39,3 +40,5 @@ d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$addr)
 d_no_match <- filter(d, purrr::map_lgl(cagis_addr_matches, vctrs::vec_is_empty))
 d_single_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) == 1))
 d_multi_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) > 1))
+
+

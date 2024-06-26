@@ -69,3 +69,5 @@ addr_match_line_one <- function(input_addr, ref_addr) {
     stats::setNames(vec_cast.addr.character(input_addr))
   return(out)
 }
+
+utils::globalVariables(c("ia_zips", "ra_zips"))

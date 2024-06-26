@@ -47,8 +47,6 @@ addr <- function(x = character(),
   )
 }
 
-# TODO make addr faster by deduplicating input character vector
-
 new_addr <- function(street_number = numeric(),
                      street_name = character(),
                      street_type = character(),
