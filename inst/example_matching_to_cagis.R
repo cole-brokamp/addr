@@ -32,13 +32,25 @@ nrow(d)
 # use addr::cagis_addr reference addresses included with the package
 d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$addr)
 
-## d <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) !is.null(.)))
-## nrow(d)
+# add matching result
+d <- d |>
+  mutate(
+    addr_match_result =
+      case_when(
+        purrr::map_lgl(cagis_addr_matches, is.null) ~ NA,
+        purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) == 0 ~ "no_match",
+        purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) == 1 ~ "match",
+        purrr::map_dbl(cagis_addr_matches, \(.) length(unique(.))) == 1 ~ "multi_match_identical",
+        purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) > 1 ~ "multi_match",
+        .default = "foofy"
+      )
+  )
 
-# NULL addr_matches means the zip code wasn't matched at all in the reference set
-# addr[0] means the zip code did match in the reference set, but no matches were found
-d_no_match <- filter(d, purrr::map_lgl(cagis_addr_matches, vctrs::vec_is_empty))
-d_single_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) == 1))
-d_multi_match <- filter(d, purrr::map_lgl(cagis_addr_matches, \(.) vctrs::vec_size(.) > 1))
+table(d$addr_match_result, useNA = "always")
 
+## street names shorter than 4 characters should not be considered a match unless oas distance == 0
+## (e.g., "117 12th Street" and "117 13th Street")
 
+## a high number of multimatches are likely condos?
+
+## are there duplicated cagis addresses? check address guids are distinct?
