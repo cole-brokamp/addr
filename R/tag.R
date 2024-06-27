@@ -11,32 +11,34 @@
 #' @details
 #' Possible address labels include:
 #'
+#'  - `AddressNumberPrefix`
+#'  - `AddressNumberSuffix`
 #'  - `AddressNumber`
-#'  - `StreetNamePreDirectional`
-#'  - `StreetName`
-#'  - `StreetNamePostType`
+#'  - `BuildingName`
+#'  - `CornerOf`
+#'  - `IntersectionSeparator`
+#'  - `LandmarkName`
+#'  - `NotAddress`
 #'  - `OccupancyIdentifier`
 #'  - `OccupancyType`
-#'  - `StreetNamePreType`
 #'  - `PlaceName`
-#'  - `ZipCode`
+#'  - `Recipient`
 #'  - `StateName`
-#'  - `LandmarkName`
-#'  - `USPSBoxType`
-#'  - `USPSBoxID`
 #'  - `StreetNamePostDirectional`
-#'  - `AddressNumberSuffix`
-#'  - `USPSBoxGroupID`
-#'  - `USPSBoxGroupType`
+#'  - `StreetNamePostType`
+#'  - `StreetNamePreDirectional`
+#'  - `StreetNamePreModifier`
+#'  - `StreetNamePreType`
+#'  - `StreetName`
 #'  - `SubaddressIdentifier`
 #'  - `SubaddressType`
-#'  - `Recipient`
-#'  - `StreetNamePreModifier`
-#'  - `BuildingName`
-#'  - `AddressNumberPrefix`
-#'  - `IntersectionSeparator`
-#'  - `CornerOf`
-#'  - `NotAddress`
+#'  - `USPSBoxGroupID`
+#'  - `USPSBoxGroupType`
+#'  - `USPSBoxID`
+#'  - `USPSBoxType`
+#'  - `ZipCode`
+#'
+#' Find more information about the definitions [here](https://www.fgdc.gov/schemas/address/)
 #' @export
 #' @examples
 #' addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))

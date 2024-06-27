@@ -33,5 +33,5 @@ In the case of an address having more than one word for a tag (e.g., "Riva Ridge
 then these are concatenated together, separated by a space in the order they appeared in the address.
 }
 \examples{
-addr(c("3333 Burnet Ave Cincinnati OH 45219", "1324 Burnet Ave Cincinnati OH 45219"))
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
 }

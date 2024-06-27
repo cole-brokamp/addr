@@ -44,9 +44,12 @@
       <addr[1]>
       [1] 7839 Dawn Road Cincinnati OH 45237
       
-      $`222 Central Parkway Cincinnati OHIO 45202`
+      $`222 E Central Parkway Cincinnati OHIO 45202`
       <addr[1]>
-      [1] 222 Central Parkway Cincinnati OH 45202
+      [1] 222 E Central Parkway Cincinnati OH 45202
+      
+      $`222 Central Parkway Cincinnati OHIO 45202`
+      <addr[0]>
       
       $<NA>
       NULL
@@ -55,8 +58,8 @@
       <addr[1]>
       [1] 31 Highridge Drive Loveland OH 45140
       
-      $`117 12th Street Cincinnati OH 45202`
+      $`117 E 12th Street Cincinnati OH 45202`
       <addr[2]>
-      [1] 117 12th Street Cincinnati OH 45202 117 13th Street Cincinnati OH 45202
+      [1] 117 E 12th Street Cincinnati OH 45202 117 E 13th Street Cincinnati OH 45202
       
 

@@ -32,33 +32,35 @@ Component names are based upon the \href{https://www.fgdc.gov/standards/projects
 \details{
 Possible address labels include:
 \itemize{
+\item \code{AddressNumberPrefix}
+\item \code{AddressNumberSuffix}
 \item \code{AddressNumber}
-\item \code{StreetNamePreDirectional}
-\item \code{StreetName}
-\item \code{StreetNamePostType}
+\item \code{BuildingName}
+\item \code{CornerOf}
+\item \code{IntersectionSeparator}
+\item \code{LandmarkName}
+\item \code{NotAddress}
 \item \code{OccupancyIdentifier}
 \item \code{OccupancyType}
-\item \code{StreetNamePreType}
 \item \code{PlaceName}
-\item \code{ZipCode}
+\item \code{Recipient}
 \item \code{StateName}
-\item \code{LandmarkName}
-\item \code{USPSBoxType}
-\item \code{USPSBoxID}
 \item \code{StreetNamePostDirectional}
-\item \code{AddressNumberSuffix}
-\item \code{USPSBoxGroupID}
-\item \code{USPSBoxGroupType}
+\item \code{StreetNamePostType}
+\item \code{StreetNamePreDirectional}
+\item \code{StreetNamePreModifier}
+\item \code{StreetNamePreType}
+\item \code{StreetName}
 \item \code{SubaddressIdentifier}
 \item \code{SubaddressType}
-\item \code{Recipient}
-\item \code{StreetNamePreModifier}
-\item \code{BuildingName}
-\item \code{AddressNumberPrefix}
-\item \code{IntersectionSeparator}
-\item \code{CornerOf}
-\item \code{NotAddress}
+\item \code{USPSBoxGroupID}
+\item \code{USPSBoxGroupType}
+\item \code{USPSBoxID}
+\item \code{USPSBoxType}
+\item \code{ZipCode}
 }
+
+Find more information about the definitions \href{https://www.fgdc.gov/schemas/address/}{here}
 }
 \examples{
 addr_tag(c("290 Ludlow Avenue Apt #2 Cincinnati OH 45220", "3333 Burnet Ave Cincinnati OH 45219"))

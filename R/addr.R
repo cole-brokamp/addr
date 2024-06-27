@@ -15,35 +15,42 @@
 #' @param clean_zip_code logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?
 #' @export
 #' @examples
-#' addr(c("3333 Burnet Ave Cincinnati OH 45219", "1324 Burnet Ave Cincinnati OH 45219"))
+#' addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
 addr <- function(x = character(),
                  clean_address_text = TRUE,
                  expand_street_type = TRUE,
                  clean_zip_code = TRUE) {
   x_tags <- addr_tag(vec_cast(x, character()), clean_address_text = clean_address_text)
   safe_extract_one <- function(x, name) {
-    out <- paste(x[names(x) == name], collapse = " ")
+    out <- paste(x[names(x) %in% name], collapse = " ")
     if (out == "") out <- NA
     return(out)
   }
-  toi_names <- c("AddressNumber", "StreetName", "StreetNamePostType", "PlaceName", "StateName", "ZipCode")
-  toi <- 
+  toi_names <- list(
+    "street_number" = c("AddressNumber"),
+    "street_name" = c("StreetNamePreType", "StreetNamePreDirectional", "StreetName"),
+    "street_type" = c("StreetNamePostType", "StreetNamePostDirectional"),
+    "city" = c("PlaceName"),
+    "state" = c("StateName"),
+    "zip_code" = c("ZipCode")
+  )
+  toi <-
     purrr::map(toi_names, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
-      stats::setNames(toi_names)
+    stats::setNames(names(toi_names))
   if (expand_street_type) {
-    toi$StreetNamePostType <- expand_post_type(toi$StreetNamePostType)
+    toi$street_type <- expand_post_type(toi$street_type)
   }
-  if (clean_zip_code && "ZipCode" %in% toi_names) {
+  if (clean_zip_code && "zip_code" %in% names(toi_names)) {
     toi$ZipCode <- gsub("[^0-9-]", "", toi$ZipCode)
     toi$ZipCode <- substr(toi$ZipCode, 1, 5)
   }
   new_addr(
-    street_number = vec_cast(as.numeric(toi$AddressNumber), numeric()),
-    street_name = vec_cast(toi$StreetName, character()),
-    street_type = vec_cast(toi$StreetNamePostType, character()),
-    city = vec_cast(toi$PlaceName, character()),
-    state = vec_cast(toi$StateName, character()),
-    zip_code = vec_cast(toi$ZipCode, character())
+    street_number = vec_cast(as.numeric(toi$street_number), numeric()),
+    street_name = vec_cast(toi$street_name, character()),
+    street_type = vec_cast(toi$street_type, character()),
+    city = vec_cast(toi$city, character()),
+    state = vec_cast(toi$state, character()),
+    zip_code = vec_cast(toi$zip_code, character())
   )
 }
 

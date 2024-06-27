@@ -13,9 +13,10 @@ test_that("addr_match works", {
     "2583 RIVERSIDE DR CINCINNATI OHIO 45202",
     "7839 DAWN RD APT 6 CINCINNATI OHIO 45237",
     "222 E CENTRAL PKWY CINCINNATI OHIO 45202", # JFS
+    "222 CENTRAL PKWY CINCINNATI OHIO 45202", # JFS
     "4571 TIMBERLAKE DR BATAVIA OHIO 45103", # outside reference addr zip codes
     "31 HIGHRIDGE DR LOVELAND OHIO 45140",
-    "117 12TH ST E CINCINNATI, OH 45202" # Greater Cinti Coalition for The Homeless
+    "117 E 12TH ST CINCINNATI, OH 45202" # Greater Cinti Coalition for The Homeless
   )
 
   cagis_matches <- addr_match(addr(my_addresses), cagis_addr$cagis_addr)
