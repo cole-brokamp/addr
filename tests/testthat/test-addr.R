@@ -46,6 +46,12 @@ test_that("as_addr() works", {
     )))
 })
 
+test_that("messed up zip codes", {
+  addr("3319 Main Street Anytown MN 45.355") |>
+    vec_cast.addr.character() |>
+    expect_equal("3319 Main Street Anytown MN 45355")
+})
+
 # test casting to character
 test_that("addr can cast to character", {
 addr(c(

@@ -41,8 +41,8 @@ addr <- function(x = character(),
     toi$street_type <- expand_post_type(toi$street_type)
   }
   if (clean_zip_code && "zip_code" %in% names(toi_names)) {
-    toi$ZipCode <- gsub("[^0-9-]", "", toi$ZipCode)
-    toi$ZipCode <- substr(toi$ZipCode, 1, 5)
+    toi$zip_code <- gsub("[^0-9-]", "", toi$zip_code)
+    toi$zip_code <- substr(toi$zip_code, 1, 5)
   }
   new_addr(
     street_number = vec_cast(as.numeric(toi$street_number), numeric()),
