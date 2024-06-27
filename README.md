@@ -63,9 +63,9 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 4
 ```
 
 List all of the potentially matching `addr`s in a reference set of
-`addr`s with `addr_match()`. The code below matches two addresses to the
-reference set of all addresses in Hamilton County, OH included in the
-package:
+`addr`s with `addr_match()`. The code below matches input addresses to
+the reference set of all addresses in Hamilton County, OH included in
+the package:
 
 ``` r
 addr(c("3333 Burnet Ave Cincinnati OH 45229", 
