@@ -2,16 +2,20 @@
 % Please edit documentation in R/addr.R
 \name{as_addr}
 \alias{as_addr}
-\title{coerce a character vector to an addr vector}
+\title{Coerce a character vector to an addr vector}
 \usage{
-as_addr(x)
+as_addr(x, ...)
 }
 \arguments{
 \item{x}{a character vector or addr vector}
+
+\item{...}{arguments passed onto \code{addr()}}
 }
 \value{
 an addr vector
 }
 \description{
-coerce a character vector to an addr vector
+Compared to using \code{addr()}, \code{as_addr()} processes input character strings such that
+parsing is done once per unique input, usually speeding up address parsing in real-world
+datasets where address strings are often duplicated across observations.
 }

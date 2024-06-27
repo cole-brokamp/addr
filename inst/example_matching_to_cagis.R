@@ -27,7 +27,7 @@ d <- d |>
   slice_sample(prop = 0.1)
 
 # convert address character strings into an addr vector
-d$addr <- addr(d$clean_address)
+d$addr <- as_addr(d$clean_address)
 
 # match with addr::cagis_addr reference addresses included in the package
 d$cagis_addr_matches <- addr_match(d$addr, cagis_addr$cagis_addr)

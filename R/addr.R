@@ -89,22 +89,21 @@ methods::setOldClass(c("addr", "vctrs_vctr"))
 
 #' @export
 vec_cast.addr.character <- function(x, to, ...) {
-  xd <- vec_data(x) 
+  xd <- vec_data(x)
   out <- paste(
-      xd$street_number,
-      stringr::str_to_title(xd$street_name),
-      stringr::str_to_title(xd$street_type),
-      stringr::str_to_title(xd$city),
-      stringr::str_to_upper(xd$state),
-      xd$zip_code
-    )
+    xd$street_number,
+    stringr::str_to_title(xd$street_name),
+    stringr::str_to_title(xd$street_type),
+    stringr::str_to_title(xd$city),
+    stringr::str_to_upper(xd$state),
+    xd$zip_code
+  )
   gsub(" NA", "", out, fixed = TRUE)
 }
 
 #' @export
 format.addr <- function(x, ...) {
   vec_cast.addr.character(x)
-  ## vec_cast(x, character())
 }
 
 #' @export
@@ -112,22 +111,27 @@ as.data.frame.addr <- function(x, ...) {
   vctrs::vec_data(x)
 }
 
-#' coerce a character vector to an addr vector
+#' Coerce a character vector to an addr vector
+#'
+#' Compared to using `addr()`, `as_addr()` processes input character strings such that
+#' parsing is done once per unique input, usually speeding up address parsing in real-world
+#' datasets where address strings are often duplicated across observations.
 #' @param x a character vector or addr vector
+#' @param ... arguments passed onto `addr()`
 #' @return an addr vector
 #' @export
-as_addr <- function(x) {
+as_addr <- function(x, ...) {
   if (inherits(x, "addr")) {
     return(x)
   }
-  addr(x)
+  ux <- unique(x)
+  u_out <- as.list(addr(ux, ...))
+  names(u_out) <- ux
+  purrr::list_c(u_out[x])
 }
-
 
 #' @export
 vec_ptype_abbr.addr <- function(x, ...) "addr"
 
 #' @export
 vec_ptype_full.addr <- function(x, ...) "addr"
-
-
