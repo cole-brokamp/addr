@@ -53,17 +53,24 @@ addr_match_line_one <- function(input_addr, ref_addr) {
       vctrs::field(ref_addr, "street_name")
     ) |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 1), simplify = FALSE)
+  street_type_matches <-
+    stringdist::stringdistmatrix(
+      vctrs::field(input_addr, "street_type"),
+      vctrs::field(ref_addr, "street_type")
+    ) |>
+    apply(MARGIN = 1, FUN = \(.) which(. <= 1), simplify = FALSE)
   number_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_number"),
       vctrs::field(ref_addr, "street_number"),
     ) |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 0), simplify = FALSE)
-  if (length(street_matches) == 0 | length(number_matches) == 0) {
+  if (length(street_matches) == 0 | length(number_matches) == 0 | length(street_type_matches) == 0) {
     return(list(rep(addr(), times = length(input_addr))))
   }
   out <-
     purrr::map2(street_matches, number_matches, intersect) |>
+    purrr::map2(street_type_matches, intersect) |>
     purrr::map(\(.) ref_addr[.]) |>
     stats::setNames(vec_cast.addr.character(input_addr))
   return(out)
