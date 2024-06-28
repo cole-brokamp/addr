@@ -61,8 +61,8 @@ matched_addr_data <-
   d |>
   filter(addr_match_result %in% c("single_match")) |>
   tidyr::unnest(cols = c("cagis_addr_matches")) |>
-  mutate(.tmp = vec_cast.addr.character(cagis_addr_matches)) |>
-  left_join(mutate(cagis_addr, .tmp = vec_cast.addr.character(.data$cagis_addr)),
+  mutate(.tmp = as.character(cagis_addr_matches)) |>
+  left_join(mutate(cagis_addr, .tmp = as.character(.data$cagis_addr)),
     by = ".tmp"
   ) |>
   select(-cagis_addr_matches, -.tmp)

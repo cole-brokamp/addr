@@ -46,22 +46,15 @@ test_that("as_addr() works", {
     )))
 })
 
-test_that("messed up zip codes", {
-  addr("3319 Main Street Anytown MN 45.355") |>
-    vec_cast.addr.character() |>
-    expect_equal("3319 Main Street Anytown MN 45355")
-})
-
-# test casting to character
 test_that("addr can cast to character", {
-addr(c(
+  addr(c(
     "290 Ludlow Avenue Apt #2 Cincinnati Ohio 45220",
     "200 W 14th Street Cincinnati OH 45222",
     "3333 Burnet Ave Cincinnati OH 45229",
     "111 State Route 32 Cincinnati OH 45912",
     "202 Riva Ridge Ct Cincinnati OH 45140"
-)) |>
-    vec_cast.addr.character() |>
+  )) |>
+    as.character() |>
     expect_equal(c(
       "290 Ludlow Avenue Cincinnati OHIO 45220",
       "200 W 14th Street Cincinnati OH 45222",
@@ -69,4 +62,8 @@ addr(c(
       "111 State Route 32 Cincinnati OH 45912",
       "202 Riva Ridge Court Cincinnati OH 45140"
     ))
+
+  addr("3319 Main Street Anytown MN 45.355") |>
+    as.character() |>
+    expect_equal("3319 Main Street Anytown MN 45355")
 })

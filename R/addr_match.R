@@ -29,7 +29,7 @@ addr_match <- function(x, ref_addr) {
       )
     ) |>
     purrr::list_flatten()
-  all_matches[match(vec_cast.addr.character(x), names(all_matches))]
+  all_matches[match(as.character(x), names(all_matches))]
 }
 
 # returns a list the same length as the input addresses where each item is a character vector of the unique matched zip codes in the reference addresses
@@ -72,7 +72,7 @@ addr_match_line_one <- function(input_addr, ref_addr) {
     purrr::map2(street_matches, number_matches, intersect) |>
     purrr::map2(street_type_matches, intersect) |>
     purrr::map(\(.) ref_addr[.]) |>
-    stats::setNames(vec_cast.addr.character(input_addr))
+    stats::setNames(as.character(input_addr))
   return(out)
 }
 

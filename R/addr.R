@@ -88,7 +88,12 @@ new_addr <- function(street_number = numeric(),
 methods::setOldClass(c("addr", "vctrs_vctr"))
 
 #' @export
-vec_cast.addr.character <- function(x, to, ...) {
+format.addr <- function(x, ...) {
+  as.character(x)
+}
+
+#' @export
+as.character.addr <- function(x, ...) {
   xd <- vec_data(x)
   out <- paste(
     xd$street_number,
@@ -99,11 +104,6 @@ vec_cast.addr.character <- function(x, to, ...) {
     xd$zip_code
   )
   gsub(" NA", "", out, fixed = TRUE)
-}
-
-#' @export
-format.addr <- function(x, ...) {
-  vec_cast.addr.character(x)
 }
 
 #' @export
