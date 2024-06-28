@@ -40,11 +40,10 @@ d <- d |>
         purrr::map_lgl(cagis_addr_matches, is.null) ~ NA,
         purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) == 0 ~ "no_match",
         purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) == 1 ~ "single_match",
-        purrr::map_dbl(cagis_addr_matches, \(.) length(unique(.))) == 1 ~ "multi_match_identical",
         purrr::map_dbl(cagis_addr_matches, vctrs::vec_size) > 1 ~ "multi_match",
         .default = "foofy"
       ) |>
-      factor(levels = c("no_match", "single_match", "multi_match_identical", "multi_match"))
+      factor(levels = c("no_match", "single_match", "multi_match"))
   )
 
 summary(d$addr_match_result)
@@ -55,14 +54,13 @@ d |>
   select(clean_address, cagis_addr_matches) |>
   tibble::deframe()
 
-# retain only single matches and use a 
-# hacky workaround to join with cagis_addr on addr by casting to character
-matched_addr_data <-
+d_matches <-
   d |>
   filter(addr_match_result %in% c("single_match")) |>
-  tidyr::unnest(cols = c("cagis_addr_matches")) |>
-  mutate(.tmp = as.character(cagis_addr_matches)) |>
-  left_join(mutate(cagis_addr, .tmp = as.character(.data$cagis_addr)),
-    by = ".tmp"
-  ) |>
-  select(-cagis_addr_matches, -.tmp)
+  mutate(cagis_addr = purrr::list_c(cagis_addr_matches)) |>
+  select(-cagis_addr_matches, -addr_match_result) |>
+  left_join(cagis_addr, by = "cagis_addr")
+
+# note that cagis_parcel_id is a list-col as some cagis_addr have multiple parcel identifiers
+# take care when merging to parcel-level data in this case where one address could match to
+# several rows of parcel datkjj

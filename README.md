@@ -15,10 +15,9 @@ status](https://www.r-pkg.org/badges/version/hashdress)](https://CRAN.R-project.
 <!-- badges: end -->
 
 Addresses that were not validated at the time of collection are often
-heterogenously formatted, making them difficult to compare or link to
-other sets of addresses. The goal of addr is to clean, parse, and
-standardize messy, real-world addresses in R to use for further linkage
-and lookup.
+heterogenously formatted, making them difficult to directly compare. The
+goal of addr is to clean, parse, standardize, and match messy,
+real-world addresses in R to use for data linkages.
 
 ## Installation
 
@@ -62,6 +61,15 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 4
 #> 2           202  riva ridge       court cincinnati    oh    45140
 ```
 
+or
+
+``` r
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 45140")) |>
+  as.character()
+#> [1] "3333 Burnet Avenue Cincinnati OH 45229"  
+#> [2] "202 Riva Ridge Court Cincinnati OH 45140"
+```
+
 List all of the potentially matching `addr`s in a reference set of
 `addr`s with `addr_match()`. The code below matches input addresses to
 the reference set of all addresses in Hamilton County, OH included in
@@ -83,4 +91,22 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229",
 #> 
 #> $`5131 Rapid Run Road Cincinnati OHIO 45238`
 #> <addr[0]>
+```
+
+Use the matched addr vector to merge in address-specific data in the
+included `cagis_addr` object.
+
+``` r
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+  addr_match(cagis_addr$cagis_addr) |>
+  tibble::enframe(name = "input_addr", value = "cagis_addr") |>
+  dplyr::mutate(cagis_addr = purrr::list_c(cagis_addr)) |>
+  dplyr::left_join(cagis_addr, by = "cagis_addr")
+#> # A tibble: 2 × 8
+#>   input_addr                                            cagis_addr cagis_address
+#>   <chr>                                                     <addr> <chr>        
+#> 1 3333 Burnet Avenue …      3333 Burnet Avenue Cincinnati OH 45229 3333 BURNET …
+#> 2 5130 Rapid Run Road… 5130 Rapid Run Road Delhi Township OH 45238 5130 RAPID R…
+#> # ℹ 5 more variables: cagis_address_place <chr>, cagis_is_condo <lgl>,
+#> #   cagis_address_type <chr>, cagis_s2 <s2_cell>, cagis_parcel_id <list>
 ```

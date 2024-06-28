@@ -25,8 +25,8 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 
-Addresses that were not validated at the time of collection are often heterogenously formatted, making them difficult to compare or link to other sets of addresses. 
-The goal of addr is to clean, parse, and standardize messy, real-world addresses in R to use for further linkage and lookup.
+Addresses that were not validated at the time of collection are often heterogenously formatted, making them difficult to directly compare. 
+The goal of addr is to clean, parse, standardize, and match messy, real-world addresses in R to use for data linkages.
 
 ## Installation
 
@@ -58,6 +58,13 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 4
   as.data.frame()
 ```
 
+or
+
+```{r}
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 45140")) |>
+  as.character()
+```
+
 List all of the potentially matching `addr`s in a reference set of `addr`s with `addr_match()`. The code below matches input addresses to the reference set of all addresses in Hamilton County, OH included in the package:
 
 ```{r}
@@ -66,4 +73,14 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229",
     "5131 RAPID RUN RD CINCINNATI OHIO 45238"
 )) |>
   addr_match(cagis_addr$cagis_addr)
+```
+
+Use the matched addr vector to merge in address-specific data in the included `cagis_addr` object.
+
+```{r}
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+  addr_match(cagis_addr$cagis_addr) |>
+  tibble::enframe(name = "input_addr", value = "cagis_addr") |>
+  dplyr::mutate(cagis_addr = purrr::list_c(cagis_addr)) |>
+  dplyr::left_join(cagis_addr, by = "cagis_addr")
 ```
