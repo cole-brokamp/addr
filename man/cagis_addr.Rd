@@ -5,13 +5,15 @@
 \alias{cagis_addr}
 \title{CAGIS Addresses}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 322095 rows and 7 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 320453 rows and 7 columns.
 }
 \usage{
 cagis_addr
 }
 \description{
-An example tibble created from the CAGIS addresses with pre-calculated \code{addr} vector column.
+An example tibble created from the CAGIS addresses with a pre-calculated, unique \code{addr} vector column.
+The \code{cagis_parcel_id} column is a list of character vectors because one CAGIS address can correspond to multiple
+parcel identifiers.
 See \code{data-raw/make_cagis_addr.R} for source code to create data, including filtering criteria:
 }
 \details{
