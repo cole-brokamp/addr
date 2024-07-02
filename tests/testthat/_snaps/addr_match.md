@@ -1,4 +1,4 @@
-# addr_match works
+# addr_match with cagis works
 
     Code
       cagis_matches
@@ -63,7 +63,7 @@
       [1] 31 Highridge Drive Loveland OH 45140
       
       $`117 E 12th Street Cincinnati OH 45202`
-      <addr[2]>
-      [1] 117 E 12th Street Cincinnati OH 45202 117 E 13th Street Cincinnati OH 45202
+      <addr[1]>
+      [1] 117 E 12th Street Cincinnati OH 45202
       
 

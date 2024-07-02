@@ -47,12 +47,16 @@ addr_match_zip <- function(input_addr, ref_addr) {
 # returns a list of possible addr matches in ref_addr for each addr in input_addr
 # output is named by casting input_addr to character
 addr_match_line_one <- function(input_addr, ref_addr) {
-  street_matches <-
+  exact_street_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_name"),
-      vctrs::field(ref_addr, "street_name")
-    ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. <= 1), simplify = FALSE)
+      vctrs::field(ref_addr, "street_name")) |>
+    apply(MARGIN = 1, FUN = \(.) which(. == 0), simplify = FALSE)
+  one_off_street_matches <-
+    stringdist::stringdistmatrix(
+      vctrs::field(input_addr, "street_name"),
+      vctrs::field(ref_addr, "street_name")) |>
+    apply(MARGIN = 1, FUN = \(.) which(. == 1), simplify = FALSE)
   street_type_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_type"),
@@ -65,11 +69,18 @@ addr_match_line_one <- function(input_addr, ref_addr) {
       vctrs::field(ref_addr, "street_number"),
     ) |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 0), simplify = FALSE)
-  if (length(street_matches) == 0 | length(number_matches) == 0 | length(street_type_matches) == 0) {
+  if (length(exact_street_matches) == 0 | length(one_off_street_matches) == 0 | length(number_matches) == 0 | length(street_type_matches) == 0) {
     return(list(rep(addr(), times = length(input_addr))))
   }
   out <-
-    purrr::map2(street_matches, number_matches, intersect) |>
+    purrr::map2(exact_street_matches, one_off_street_matches, \(.x, .y) {
+      if (length(.x) > 0) {
+        return(.x)
+      } else {
+        return(.y)
+      }
+    }) |>
+    purrr::map2(number_matches, intersect) |>
     purrr::map2(street_type_matches, intersect) |>
     purrr::map(\(.) ref_addr[.]) |>
     stats::setNames(as.character(input_addr))

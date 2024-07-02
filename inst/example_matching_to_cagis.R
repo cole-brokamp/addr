@@ -54,6 +54,11 @@ d |>
   select(clean_address, cagis_addr_matches) |>
   tibble::deframe()
 
+# no matches
+d |>
+  filter(addr_match_result == "no_match") |>
+  select(clean_address, cagis_addr_matches)
+
 d_matches <-
   d |>
   filter(addr_match_result %in% c("single_match")) |>
