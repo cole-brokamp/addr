@@ -67,3 +67,17 @@ test_that("addr can cast to character", {
     as.character() |>
     expect_equal("3319 Main Street Anytown MN 45355")
 })
+
+test_that("addr abbreviates cardinal directions", {
+
+  addr(c(
+    "222 east Central Parkway Cincinnati OH 45000",
+    "222 East Central Parkway Cincinnati OH 45000",
+    "222 EAST Central Parkway Cincinnati OH 45000",
+    "222 E Central Parkway Cincinnati OH 45000",
+    "222 e Central Parkway Cincinnati OH 45000"
+  )) |>
+    as.character() |>
+    expect_equal(rep("222 E Central Parkway Cincinnati OH 45000", 5))
+
+})

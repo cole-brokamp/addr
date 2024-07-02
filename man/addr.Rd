@@ -8,6 +8,7 @@ addr(
   x = character(),
   clean_address_text = TRUE,
   expand_street_type = TRUE,
+  abbrev_cardinal_dir = TRUE,
   clean_zip_code = TRUE
 )
 }
@@ -18,6 +19,8 @@ addr(
 
 \item{expand_street_type}{logical; use \code{expand_post_type()} to expand \code{StreetNamePostType} tags?}
 
+\item{abbrev_cardinal_dir}{logical; abbreviate cardinal directions?}
+
 \item{clean_zip_code}{logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?}
 }
 \description{
@@ -26,7 +29,8 @@ character vector into standardized address tags for comparison and lookup with \
 By default, address strings are cleaned with \code{addr_clean()},
 ZIP codes are restricted to the first five digits and set to missing
 if they contain any non-digit characters,
-and the street name post types are expanded (e.g., "Ave" -> "Avenue").
+street name post types are expanded (e.g., "Ave" -> "Avenue"),
+and cardinal directions are abbreviated (e.g. "west" -> "W")
 }
 \details{
 In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for \code{StreetName}),

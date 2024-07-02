@@ -5,13 +5,15 @@
 #' By default, address strings are cleaned with `addr_clean()`,
 #' ZIP codes are restricted to the first five digits and set to missing
 #' if they contain any non-digit characters,
-#' and the street name post types are expanded (e.g., "Ave" -> "Avenue").
+#' street name post types are expanded (e.g., "Ave" -> "Avenue"),
+#' and cardinal directions are abbreviated (e.g. "west" -> "W")
 #' @details
 #' In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for `StreetName`),
 #' then these are concatenated together, separated by a space in the order they appeared in the address.
 #' @param x a character vector of address strings
 #' @param clean_address_text logical; use `clean_address_text()` to clean address text prior to tagging?
 #' @param expand_street_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
+#' @param abbrev_cardinal_dir logical; abbreviate cardinal directions?
 #' @param clean_zip_code logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?
 #' @export
 #' @examples
@@ -19,6 +21,7 @@
 addr <- function(x = character(),
                  clean_address_text = TRUE,
                  expand_street_type = TRUE,
+                 abbrev_cardinal_dir = TRUE,
                  clean_zip_code = TRUE) {
   x_tags <- addr_tag(vec_cast(x, character()), clean_address_text = clean_address_text)
   safe_extract_one <- function(x, name) {
@@ -37,6 +40,15 @@ addr <- function(x = character(),
   toi <-
     purrr::map(toi_names, \(.) purrr::map_chr(x_tags, safe_extract_one, .)) |>
     stats::setNames(names(toi_names))
+  if (abbrev_cardinal_dir) {
+    # replace cardinal dir at beginning of line with a space after or as its own word
+    toi$street_name <-
+      stringr::str_replace_all(
+        toi$street_name,
+        stringr::regex(c("^east " = "e ", "^west " = "w ", "^north " = "n ", "^south " = "s ",
+                         " east " = " e ", " west " = " w ", " north " = " n ", " south " = " s "), ignore_case = TRUE)
+      )
+  }
   if (expand_street_type) {
     toi$street_type <- expand_post_type(toi$street_type)
   }
