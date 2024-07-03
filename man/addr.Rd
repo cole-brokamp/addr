@@ -26,11 +26,12 @@ addr(
 \description{
 An addr object is created by converting messy, real-world mailing addresses in a
 character vector into standardized address tags for comparison and lookup with \code{addr_tag()}.
-By default, address strings are cleaned with \code{addr_clean()},
+By default, text is cleaned with \code{clean_address_text()},
 ZIP codes are restricted to the first five digits and set to missing
 if they contain any non-digit characters,
 street name post types are expanded (e.g., "Ave" -> "Avenue"),
-and cardinal directions are abbreviated (e.g. "west" -> "W")
+cardinal directions are abbreviated (e.g. "west" -> "W"),
+and non-digit characters are removed from the street number.
 }
 \details{
 In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for \code{StreetName}),

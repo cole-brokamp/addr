@@ -2,11 +2,12 @@
 #'
 #' An addr object is created by converting messy, real-world mailing addresses in a
 #' character vector into standardized address tags for comparison and lookup with `addr_tag()`.
-#' By default, address strings are cleaned with `addr_clean()`,
+#' By default, text is cleaned with `clean_address_text()`,
 #' ZIP codes are restricted to the first five digits and set to missing
 #' if they contain any non-digit characters,
 #' street name post types are expanded (e.g., "Ave" -> "Avenue"),
-#' and cardinal directions are abbreviated (e.g. "west" -> "W")
+#' cardinal directions are abbreviated (e.g. "west" -> "W"),
+#' and non-digit characters are removed from the street number.
 #' @details
 #' In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for `StreetName`),
 #' then these are concatenated together, separated by a space in the order they appeared in the address.
@@ -57,7 +58,7 @@ addr <- function(x = character(),
     toi$zip_code <- substr(toi$zip_code, 1, 5)
   }
   new_addr(
-    street_number = vec_cast(as.numeric(toi$street_number), numeric()),
+    street_number = vec_cast(as.numeric(stringr::str_remove(toi$street_number, "[^0-9.-]")), numeric()),
     street_name = vec_cast(toi$street_name, character()),
     street_type = vec_cast(toi$street_type, character()),
     city = vec_cast(toi$city, character()),

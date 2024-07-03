@@ -81,3 +81,8 @@ test_that("addr abbreviates cardinal directions", {
     expect_equal(rep("222 E Central Parkway Cincinnati OH 45000", 5))
 
 })
+
+test_that("addr deals with non-numeric street number address", {
+  addr("1234B Main St Cincinnati OH 45000") |>
+    expect_equal(addr("1234 Main St Cincinnati OH 45000"))
+})
