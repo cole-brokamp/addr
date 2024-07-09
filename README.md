@@ -110,3 +110,11 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO
 #> # ℹ 5 more variables: cagis_address_place <chr>, cagis_is_condo <lgl>,
 #> #   cagis_address_type <chr>, cagis_s2 <s2_cell>, cagis_parcel_id <list>
 ```
+
+Intersect s2 locations with TIGER/Line census block group identifiers:
+
+``` r
+tiger_block_groups(s2::as_s2_cell(c("8841b39a7c46e25f", "8841a45555555555")), year = "2023")
+#> 8841b39a7c46e25f 8841a45555555555 
+#>   "390610032001"   "210370519034"
+```
