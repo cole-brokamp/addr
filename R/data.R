@@ -1,8 +1,8 @@
 #' CAGIS Addresses
 #'
-#' An example tibble created from the CAGIS addresses with a pre-calculated, unique `addr` vector column.
-#' The `cagis_parcel_id` column is a list of character vectors because one CAGIS address can correspond to multiple
-#' parcel identifiers.
+#' An example tibble created from the CAGIS addresses with a pre-calculated, unique `cagis_addr` vector column.
+#' The `cagis_addr_data` column is a list of tibbles because one CAGIS address can correspond to multiple
+#' parcel identifiers and address-level data (place, type, s2, etc.).
 #' See `data-raw/make_cagis_addr.R` for source code to create data, including filtering criteria:
 #'
 #' - use only addresses that have `STATUS` of `ASSIGNED` or `USING` and are not orphaned (`ORPHANFLG == "N"`)

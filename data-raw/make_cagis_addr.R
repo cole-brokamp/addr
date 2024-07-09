@@ -39,8 +39,7 @@ cagis_addr <-
 
 cagis_addr <-
   cagis_addr |>
-  nest_by(cagis_addr, cagis_address, cagis_address_place, cagis_is_condo, cagis_address_type, cagis_s2, .key = "cagis_parcel_id") |>
-  ungroup() |>
-  mutate(cagis_parcel_id = purrr::map(cagis_parcel_id, \(.) .$cagis_parcel_id))
+  nest_by(cagis_addr, .key = "cagis_addr_data") |>
+  ungroup()
 
 usethis::use_data(cagis_addr, overwrite = TRUE, compress = "xz")

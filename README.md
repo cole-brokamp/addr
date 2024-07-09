@@ -102,13 +102,11 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO
   tibble::enframe(name = "input_addr", value = "cagis_addr") |>
   dplyr::mutate(cagis_addr = purrr::list_c(cagis_addr)) |>
   dplyr::left_join(cagis_addr, by = "cagis_addr")
-#> # A tibble: 2 × 8
-#>   input_addr                                            cagis_addr cagis_address
-#>   <chr>                                                     <addr> <chr>        
-#> 1 3333 Burnet Avenue …      3333 Burnet Avenue Cincinnati OH 45229 3333 BURNET …
-#> 2 5130 Rapid Run Road… 5130 Rapid Run Road Delhi Township OH 45238 5130 RAPID R…
-#> # ℹ 5 more variables: cagis_address_place <chr>, cagis_is_condo <lgl>,
-#> #   cagis_address_type <chr>, cagis_s2 <s2_cell>, cagis_parcel_id <list>
+#> # A tibble: 2 × 3
+#>   input_addr                                          cagis_addr cagis_addr_data
+#>   <chr>                                                   <addr> <list<tibble[,>
+#> 1 3333 Burnet Avenu…      3333 Burnet Avenue Cincinnati OH 45229         [1 × 6]
+#> 2 5130 Rapid Run Ro… 5130 Rapid Run Road Delhi Township OH 45238         [1 × 6]
 ```
 
 Intersect s2 locations with TIGER/Line census block group identifiers:
