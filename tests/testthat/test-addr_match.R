@@ -1,3 +1,40 @@
+test_that("addr_match_street() works", {
+
+  addr_match_street(
+    addr(c("224 Woolper Ave Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
+    addr(c("Woolper Ave", "Main Street", "Burnet Ave", "Bulnet Ave"))
+  ) |>
+    expect_identical(list(1L, 2L, 3L))
+
+  addr_match_street(
+    addr(c("224 Woolper Ave Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
+    addr(c("Woolper Ave", "Main Street", "Burnet Ave", "Bulnet Ave")),
+    stringdist_match = "exact"
+  ) |>
+    expect_identical(list(1L, integer(0), 3L))
+
+  addr_match_street(
+    addr(c("224 Woolper St Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
+    addr(c("Woolper Ave", "Main Street", "Burnet Ave", "Bulnet Ave")),
+    match_street_type = FALSE
+  ) |>
+    expect_identical(list(1L, 2L, 3L))
+
+  addr_match_street(
+    addr(c("224 Woolper Ave Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
+    addr(c("Woolper Ave", "Main Street", "Nain Street", "Burnet Ave", "Bulnet Ave"))
+  ) |>
+    expect_identical(list(1L, 3L, 4L))
+
+  addr_match_street(
+    addr(c("224 Woolper Ave Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
+    addr(c("Woolper Ave", "Main Street", "Burnet Ave", "Bulnet Ave")),
+    stringdist_match = "exact"
+  ) |>
+    expect_identical(list(1L, integer(0), 3L))
+
+})
+
 test_that("addr_match works", {
 
   addr_match(
