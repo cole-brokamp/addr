@@ -22,9 +22,6 @@ each vector contains all space-separated elements of the cleaned address
 and are each named based on inferred address labels (see Details)
 }
 \description{
-Return list of lists of address tags to R.
-
-Tag components of an address string
 The address components are tagged using a \href{https://github.com/boydjohnson/usaddress-rs}{rust port} of
 \href{https://github.com/datamade/usaddress}{usaddress}.
 Component names are based upon the \href{https://www.fgdc.gov/standards/projects/address-data}{United States Thoroughfare, Landmark, and Postal Address Data Standard}.

@@ -6,7 +6,6 @@
 # This file was created with the following call:
 #   .Call("wrap__make_addr_wrappers", use_symbols = TRUE, package_name = "addr")
 
-#' @docType package
 #' @usage NULL
 #' @useDynLib addr, .registration = TRUE
 NULL
