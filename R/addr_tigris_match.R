@@ -1,18 +1,26 @@
 #' Get tigris street range geography files from census.gov
+#'
+#' Downloaded files are cached in `tools::R_user_dir("addr", "cache")`.
 #' @param county character string of county identifier
 #' @param year year of tigris product
 #' @returns a tibble of street names with a nested column of address range geographies with
 #' min number, max number, id, and geography columns
 #' @export
-#' @example
-#' get_tigris_street_ranges("39061")
+#' @examples
+#' Sys.setenv("R_USER_CACHE_DIR" = tempfile())
+#' d <- get_tigris_street_ranges("39061")
+#' head(d)
+#' d[3, "sf_tbl", drop = TRUE]
 get_tigris_street_ranges <- function(county, year = "2022") {
   stopifnot(year == "2022")
-  tf <- tempfile(fileext = ".zip")
-  glue::glue("https://www2.census.gov/geo/tiger/TIGER2022/ADDRFEAT/tl_2022_{county}_addrfeat.zip") |>
-    download.file(destfile = tf)
+  dl_url <- glue::glue("https://www2.census.gov/geo/tiger/TIGER2022/ADDRFEAT/tl_2022_{county}_addrfeat.zip")
+  dest_path <- fs::path(tools::R_user_dir("addr", "cache"), glue::glue("tl_2022_{county}_addrfeat.zip"))
+  fs::dir_create(fs::path_dir(dest_path))
+  if (!fs::file_exists(dest_path)) {
+    download.file(dl_url, dest_path)
+  }
   sf::st_read(
-    dsn = paste0("/vsizip/", tf),
+    dsn = paste0("/vsizip/", dest_path),
     query = "SELECT TLID, FULLNAME, LFROMHN, LTOHN, RFROMHN, RTOHN FROM tl_2022_39061_addrfeat",
     quiet = TRUE, stringsAsFactors = FALSE, as_tibble = TRUE
   ) |>

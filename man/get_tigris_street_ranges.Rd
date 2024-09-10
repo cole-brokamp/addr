@@ -16,5 +16,11 @@ a tibble of street names with a nested column of address range geographies with
 min number, max number, id, and geography columns
 }
 \description{
-Get tigris street range geography files from census.gov
+Downloaded files are cached in \code{tools::R_user_dir("addr", "cache")}.
+}
+\examples{
+Sys.setenv("R_USER_CACHE_DIR" = tempfile())
+d <- get_tigris_street_ranges("39061")
+head(d)
+d[3, "sf_tbl", drop = TRUE]
 }
