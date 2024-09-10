@@ -34,7 +34,8 @@ addr_match <- function(x, ref_addr) {
 
 # returns a list the same length as the input addresses where each item is a character vector of the unique matched zip codes in the reference addresses
 addr_match_zip <- function(input_addr, ref_addr) {
-  c(ia_zips, ra_zips) %<-% lapply(list(input_addr, ref_addr), \(.) unique(vctrs::field(., "zip_code")))
+  ia_zips <- unique(vctrs::field(input_addr, "zip_code"))
+  ra_zips <- unique(vctrs::field(ref_addr, "zip_code"))
   match_lookup <-
     stringdist::stringdistmatrix(ia_zips, ra_zips, method = "osa") |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 0)) |>

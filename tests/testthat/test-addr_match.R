@@ -69,7 +69,7 @@ test_that("addr_match with cagis works", {
     "117 E 12TH ST CINCINNATI, OH 45202" # Greater Cinti Coalition for The Homeless
   )
 
-  cagis_matches <- addr_match(addr(my_addresses), cagis_addr$cagis_addr)
+  cagis_matches <- addr_match(addr(my_addresses), cagis_addr()$cagis_addr)
 
   expect_type(cagis_matches, "list")
   expect_snapshot(cagis_matches)
