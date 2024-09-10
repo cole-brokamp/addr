@@ -68,4 +68,4 @@ d_matches <-
 
 # note that cagis_parcel_id is a list-col as some cagis_addr have multiple parcel identifiers
 # take care when merging to parcel-level data in this case where one address could match to
-# several rows of parcel datkjj
+# several rows of parcel data
