@@ -17,7 +17,7 @@ get_tigris_street_ranges <- function(county, year = "2022") {
   dest_path <- fs::path(tools::R_user_dir("addr", "cache"), glue::glue("tl_2022_{county}_addrfeat.zip"))
   fs::dir_create(fs::path_dir(dest_path))
   if (!fs::file_exists(dest_path)) {
-    download.file(dl_url, dest_path)
+    utils::download.file(dl_url, dest_path)
   }
   sf::st_read(
     dsn = paste0("/vsizip/", dest_path),
@@ -47,8 +47,10 @@ get_tigris_street_ranges <- function(county, year = "2022") {
 #' @return a list of tigris street ranges matching the street name and containing the street number in x;
 #' a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
 #' that although a street was matched, there was no range containing the street number
+#' @export
 #' @examples
-#' addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St")))
+#' addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave",
+#'                                           "33333 Burnet Ave", "609 Walnut St")))
 addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") {
   stopifnot(inherits(x, "addr"))
   ia <- unique(x)
@@ -65,7 +67,7 @@ addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") 
 
   no_match_street <- which(is.na(street_matches))
   ia[no_match_street] <- NA
-  ia <- na.omit(ia)
+  ia <- stats::na.omit(ia)
   street_matches[no_match_street] <- NULL
   stopifnot(length(ia) == length(street_matches))
 
@@ -74,7 +76,9 @@ addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") 
       vctrs::field(ia, "street_number"), street_matches,
       \(.sn, .sm) dplyr::filter(.sm, from <= .sn, to >= .sn)
     ) |>
-    setNames(as.character(ia))
+    stats::setNames(as.character(ia))
 
-  return(setNames(out[as.character(x)], as.character(x)))
+  return(stats::setNames(out[as.character(x)], as.character(x)))
 }
+
+utils::globalVariables(c("from", "to", "FULLNAME", "LFROMHN", "LTOHN", "RFROMHN", "RTOHN", "TLID"))
