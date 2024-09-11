@@ -49,8 +49,10 @@ get_tigris_street_ranges <- function(county, year = "2022") {
 #' that although a street was matched, there was no range containing the street number
 #' @export
 #' @examples
-#' addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave",
-#'                                           "33333 Burnet Ave", "609 Walnut St")))
+#' d <- addr_match_tigris_street_ranges(as_addr(c(
+#'   "224 Woolper Ave", "3333 Burnet Ave",
+#'   "33333 Burnet Ave", "609 Walnut St"
+#' )))
 addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") {
   stopifnot(inherits(x, "addr"))
   ia <- unique(x)
@@ -79,6 +81,45 @@ addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") 
     stats::setNames(as.character(ia))
 
   return(stats::setNames(out[as.character(x)], as.character(x)))
+}
+
+#' Find the geometrical union of a sfc of tiger street ranges
+#'
+#' Usually coming from `addr_match_tigris_street_ranges()`, each simple feature tibble
+#' can be transformed into a single row by unionizing the geometries,
+#' concatenating the `TLID`s, and calculating new `from` and `to` street numbers.
+#' @param x a simple features tibble produced by `get_tigris_street_ranges()`
+#' @returns a simple features tibble the same as `x`, but summarized to one row
+#' (or zero rows if the input has zero rows, or NULL if the input is NULL)
+#' @examples
+#' d <- addr_match_tigris_street_ranges(as_addr(c(
+#'   "224 Woolper Ave", "3333 Burnet Ave",
+#'   "33333 Burnet Ave", "609 Walnut St"
+#' )))
+#' d <- tibble::enframe(d)
+#' d$geometry <- purrr::map(d$value, summarize_street_range)
+#' d |>
+#'   dplyr::select(-value) |>
+#'   tidyr::unnest(geometry) |>
+#'   sf::st_as_sf() |>
+#'   dplyr::mutate(s2_cell = s2::as_s2_cell(s2::as_s2_geography(sf::st_centroid(geometry)))) |>
+#'   dplyr::select(-from, -to) |>
+#'   sf::st_drop_geometry()
+summarize_street_range <- function(x) {
+  if (length(x) == 0) {
+    return(x)
+  }
+  if (nrow(x) == 0) {
+    return(x)
+  }
+  out <- tibble::tibble(
+    TLID = paste(x$TLID, collapse = "-"),
+    geometry = sf::st_union(x$geometry),
+    from = min(x$from, na.rm = TRUE),
+    to = max(x$to, na.rm = TRUE)
+  ) |>
+    sf::st_as_sf()
+  return(out)
 }
 
 utils::globalVariables(c("from", "to", "FULLNAME", "LFROMHN", "LTOHN", "RFROMHN", "RTOHN", "TLID"))
