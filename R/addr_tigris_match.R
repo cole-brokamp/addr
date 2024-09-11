@@ -44,52 +44,37 @@ get_tigris_street_ranges <- function(county, year = "2022") {
 #' @param x an addr vector to match
 #' @param county character string of county identifier
 #' @param year year of tigris product
+#' @return a list of tigris street ranges matching the street name and containing the street number in x;
+#' a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
+#' that although a street was matched, there was no range containing the street number
 #' @examples
-#' addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "609 Walnut St")))
+#' addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St")))
 addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022") {
-  ia <- stats::na.omit(unique(as_addr(unique(x))))
-  d_tiger <-
-    get_tigris_street_ranges(county = county, year = year) |>
-    dplyr::mutate(addr = as_addr(FULLNAME)) |>
-    suppressWarnings()
+  stopifnot(inherits(x, "addr"))
+  ia <- unique(x)
+  d_tiger <- get_tigris_street_ranges(county = county, year = year)
 
-  exact_street_matches <-
-    stringdist::stringdistmatrix(
-      vctrs::field(ia, "street_name"),
-      vctrs::field(d_tiger$addr, "street_name")
+  street_matches <-
+    addr_match_street(ia,
+      suppressWarnings(as_addr(d_tiger$FULLNAME)),
+      stringdist_match = "osa_lt_1",
+      match_street_type = TRUE
     ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. == 0), simplify = FALSE)
+    purrr::map(\(.) d_tiger[., "sf_tbl", drop = TRUE]) |>
+    purrr::map(purrr::pluck, 1, .default = NA)
 
-  one_off_street_matches <-
-    stringdist::stringdistmatrix(
-      vctrs::field(ia, "street_name"),
-      vctrs::field(d_tiger$addr, "street_name")
-    ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. == 1), simplify = FALSE)
-
-  street_type_matches <-
-    stringdist::stringdistmatrix(
-      vctrs::field(ia, "street_type"),
-      vctrs::field(d_tiger$addr, "street_type")
-    ) |>
-    apply(MARGIN = 1, FUN = \(.) which(. <= 1), simplify = FALSE)
-
-  if (length(exact_street_matches) == 0 | length(one_off_street_matches) == 0 | length(street_type_matches) == 0) {
-    return(list(rep(addr(), times = length(input_addr))))
-  }
+  no_match_street <- which(is.na(street_matches))
+  ia[no_match_street] <- NA
+  ia <- na.omit(ia)
+  street_matches[no_match_street] <- NULL
+  stopifnot(length(ia) == length(street_matches))
 
   out <-
-    purrr::map2(exact_street_matches, one_off_street_matches, \(.x, .y) {
-      if (length(.x) > 0) {
-        return(.x)
-      } else {
-        return(.y)
-      }
-    }) |>
-    purrr::map2(street_type_matches, intersect) |>
-    purrr::map(\(.x) d_tiger[.x, ]) |>
-    purrr::map(\(.x) .x$sf_tbl[1][[1]]) |>
+    purrr::map2(
+      vctrs::field(ia, "street_number"), street_matches,
+      \(.sn, .sm) dplyr::filter(.sm, from <= .sn, to >= .sn)
+    ) |>
     setNames(as.character(ia))
 
-  return(out[as.character(x)])
+  return(setNames(out[as.character(x)], as.character(x)))
 }
