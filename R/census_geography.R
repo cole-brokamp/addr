@@ -35,7 +35,7 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
 }
 
 read_tiger_bg_state <- function(state, year) {
-  dest <- file.path(tools::R_user_dir("tiger_bg", "cache"), glue::glue("tl_{year}_{state}_bg.zip"))
+  dest <- file.path(tools::R_user_dir("addr", "cache"), glue::glue("tl_{year}_{state}_bg.zip"))
   dir.create(dirname(dest), showWarnings = FALSE)
   if (!file.exists(dest)) {
     utils::download.file(
@@ -56,7 +56,7 @@ read_tiger_bg_state <- function(state, year) {
 }
 
 tiger_states <- function(year) {
-  dest <- file.path(tools::R_user_dir("tiger_bg", "cache"), glue::glue("tl_{year}_us_state.zip"))
+  dest <- file.path(tools::R_user_dir("addr", "cache"), glue::glue("tl_{year}_us_state.zip"))
   dir.create(dirname(dest), showWarnings = FALSE)
   if (!file.exists(dest)) {
     utils::download.file(
