@@ -15,3 +15,18 @@
 cagis_addr <- function() {
   readRDS(fs::path_package("addr", "cagis_addr.rds"))
 }
+
+#' Example real-world addresses
+#'
+#' The voter_addresses data was generated as an example character vector of real-world addresses.
+#' These addresses were downloaded from the Hamilton County, Ohio voter registration database on 2024-09-12.
+#' See `inst/make_example_addresses.R` for more details.
+#' `AddressPreDirectional`, `AddressNumber`, `AddressStreet`, `AddressSuffix`, `CityName`, "OH", and `AddressZip`
+#' are pasted together to create 242,133 unique addresses of registered voters in Hamilton County, OH.
+#' @returns a character vector
+#' @export
+#' @examples
+#' voter_addresses()
+voter_addresses <- function() {
+  readRDS(fs::path_package("addr", "voter_addresses.rds"))
+}
