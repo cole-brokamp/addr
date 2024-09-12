@@ -1,0 +1,15 @@
+url: https://cole-brokamp.github.io/addr/
+template:
+  bootstrap: 5
+  bslib:
+    bg: '#FFFFFF'
+    fg: '#396175'
+    primary: '#C28273'
+    info: '#EACEC5'
+    warning: '#E49865'
+    grid-gutter-width: 0.0rem
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+    code_font:
+      google: Source Code Pro
+
