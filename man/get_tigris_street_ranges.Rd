@@ -12,15 +12,13 @@ get_tigris_street_ranges(county, year = "2022")
 \item{year}{year of tigris product}
 }
 \value{
-a tibble of street names with a nested column of address range geographies with
-min number, max number, id, and geography columns
+a list of tibbles, one for each street name, with \code{TLID}, \code{s2_geography}, \code{from}, and \code{to} columns
 }
 \description{
 Downloaded files are cached in \code{tools::R_user_dir("addr", "cache")}.
+Street ranges with missing minimum or maximum address numbers are excluded.
 }
 \examples{
 Sys.setenv("R_USER_CACHE_DIR" = tempfile())
-d <- get_tigris_street_ranges("39061")
-head(d)
-d[3, "sf_tbl", drop = TRUE]
+get_tigris_street_ranges("39061")[1001:1004]
 }
