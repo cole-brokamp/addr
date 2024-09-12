@@ -43,7 +43,3 @@ cagis_addr <-
   ungroup()
 
 saveRDS(cagis_addr, fs::path("inst", "cagis_addr.rds"))
-
-fs::path_package("addr")
-
-usethis::use_data(cagis_addr, overwrite = TRUE, compress = "xz")
