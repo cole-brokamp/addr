@@ -46,7 +46,8 @@ get_tigris_street_ranges <- function(county, year = "2022") {
 #' @param x an addr vector to match
 #' @param county character string of county identifier
 #' @param year year of tigris product
-#' @return a list of tigris street ranges matching the street name and containing the street number in x;
+#' @param summarize optionally summarize matched street ranges as their union or centroid
+#' @return a list of tigris street range tibbles matching the street name and containing the street number in x;
 #' a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
 #' that although a street was matched, there was no range containing the street number
 #' @export
@@ -119,4 +120,4 @@ summarize_street_range_tibble <- function(x, method = c("union", "centroid")) {
   return(out)
 }
 
-utils::globalVariables(c("from", "to", "FULLNAME", "LFROMHN", "LTOHN", "RFROMHN", "RTOHN", "TLID"))
+utils::globalVariables(c("from", "to", "geometry", "FULLNAME", "LFROMHN", "LTOHN", "RFROMHN", "RTOHN", "TLID"))

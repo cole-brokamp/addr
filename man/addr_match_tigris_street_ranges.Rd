@@ -17,9 +17,11 @@ addr_match_tigris_street_ranges(
 \item{county}{character string of county identifier}
 
 \item{year}{year of tigris product}
+
+\item{summarize}{optionally summarize matched street ranges as their union or centroid}
 }
 \value{
-a list of tigris street ranges matching the street name and containing the street number in x;
+a list of tigris street range tibbles matching the street name and containing the street number in x;
 a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
 that although a street was matched, there was no range containing the street number
 }

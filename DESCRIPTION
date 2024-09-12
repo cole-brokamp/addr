@@ -21,6 +21,7 @@ Imports:
     dplyr,
     glue,
     fs,
+    tibble,
     rlang,
     vctrs,
     methods,
