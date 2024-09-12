@@ -8,8 +8,8 @@
 #' @export
 #' @examples
 #' Sys.setenv("R_USER_CACHE_DIR" = tempfile())
-#' get_tigris_street_ranges("39061")[1001:1004]
-get_tigris_street_ranges <- function(county, year = "2022") {
+#' get_tiger_street_ranges("39061")[1001:1004]
+get_tiger_street_ranges <- function(county, year = "2022") {
   stopifnot(year == "2022")
   dl_url <- glue::glue("https://www2.census.gov/geo/tiger/TIGER2022/ADDRFEAT/tl_2022_{county}_addrfeat.zip")
   dest_path <- fs::path(tools::R_user_dir("addr", "cache"), glue::glue("tl_2022_{county}_addrfeat.zip"))
@@ -54,16 +54,16 @@ get_tigris_street_ranges <- function(county, year = "2022") {
 #' @examples
 #' my_addr <- as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St"))
 #'
-#' addr_match_tigris_street_ranges(my_addr, county = "39061")
+#' addr_match_tiger_street_ranges(my_addr, county = "39061")
 #'
-#' addr_match_tigris_street_ranges(my_addr, county = "39061", summarize = "union")
+#' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "union")
 #'
-#' addr_match_tigris_street_ranges(my_addr, county = "39061", summarize = "centroid")
-addr_match_tigris_street_ranges <- function(x, county = "39061", year = "2022", summarize = c("none", "union", "centroid")) {
+#' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid")
+addr_match_tiger_street_ranges <- function(x, county = "39061", year = "2022", summarize = c("none", "union", "centroid")) {
   stopifnot(inherits(x, "addr"))
   summarize <- rlang::arg_match(summarize)
   ia <- unique(x)
-  d_tiger <- get_tigris_street_ranges(county = county, year = year)
+  d_tiger <- get_tiger_street_ranges(county = county, year = year)
 
   street_matches <-
     addr_match_street(ia,

@@ -1,7 +1,7 @@
-# addr_match_tigris_street_ranges() works
+# addr_match_tiger_street_ranges() works
 
     Code
-      addr_match_tigris_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave",
+      addr_match_tiger_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave",
         "33333 Burnet Ave", "609 Walnut St")))
     Output
       $`224 Woolper Avenue`

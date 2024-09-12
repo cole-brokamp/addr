@@ -22,7 +22,7 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
   states <- tiger_states(year)
   the_states <- states[s2::s2_closest_feature(x_s2_geo, states$s2_geography), "GEOID", drop = TRUE]
   state_bgs <-
-    lapply(unique(the_states), read_tiger_bg_state, year = year) |>
+    lapply(unique(the_states), get_tiger_block_groups, year = year) |>
     stats::setNames(unique(the_states))
   the_s2s <- split(x_s2_geo, the_states)
   out <-
@@ -34,7 +34,7 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
   return(out[as.character(x)])
 }
 
-read_tiger_bg_state <- function(state, year) {
+get_tiger_block_groups <- function(state, year) {
   dest <- file.path(tools::R_user_dir("addr", "cache"), glue::glue("tl_{year}_{state}_bg.zip"))
   dir.create(dirname(dest), showWarnings = FALSE)
   if (!file.exists(dest)) {

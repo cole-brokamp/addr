@@ -11,9 +11,7 @@
 NULL
 
 #' Return list of lists of address tags to R.
-#' @param input a character vector of addresses
-#' @rdname addr_tag
-#' @export
+#' @param input character string of addresses
 usaddress_tag <- function(input) .Call(wrap__usaddress_tag, input)
 
 

@@ -2,7 +2,8 @@
 % Please edit documentation in R/addr.R
 \name{addr}
 \alias{addr}
-\title{Create a new addr object}
+\alias{as_addr}
+\title{Create a new addr vector}
 \usage{
 addr(
   x = character(),
@@ -11,32 +12,48 @@ addr(
   abbrev_cardinal_dir = TRUE,
   clean_zip_code = TRUE
 )
+
+as_addr(x, ...)
 }
 \arguments{
 \item{x}{a character vector of address strings}
 
 \item{clean_address_text}{logical; use \code{clean_address_text()} to clean address text prior to tagging?}
 
-\item{expand_street_type}{logical; use \code{expand_post_type()} to expand \code{StreetNamePostType} tags?}
+\item{expand_street_type}{logical; use \code{expand_post_type()} to expand \code{StreetNamePostType} tags? (e.g., "Ave" -> "Avenue")}
 
-\item{abbrev_cardinal_dir}{logical; abbreviate cardinal directions?}
+\item{abbrev_cardinal_dir}{logical; abbreviate cardinal directions? (e.g., "west" -> "w")}
 
 \item{clean_zip_code}{logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?}
+
+\item{...}{used to pass arguments in \code{as_addr} to underlying \code{addr()}}
 }
 \description{
-An addr object is created by converting messy, real-world mailing addresses in a
-character vector into standardized address tags for comparison and lookup with \code{addr_tag()}.
-By default, text is cleaned with \code{clean_address_text()},
-ZIP codes are restricted to the first five digits and set to missing
-if they contain any non-digit characters,
-street name post types are expanded (e.g., "Ave" -> "Avenue"),
-cardinal directions are abbreviated (e.g. "west" -> "W"),
-and non-digit characters are removed from the street number.
+An addr vector is created by converting messy, real-world mailing addresses in a
+character vector into a list of standardized address tags that behaves like a vector.
+\code{addr()} (and \code{as_addr()}) vectors are a list of address tags under the hood, constructed
+by tagging address components using \code{addr_tag()} and combining them into specific fields:
+\itemize{
+\item \code{street_number}: \code{AddressNumber}
+\item \code{street_name}: \code{StreetNamePreType}, \code{StreetNamePreDirectional}, \code{StreetName}
+\item \code{street_type}: \code{StreetNamePostType}, StreetNamePostDirectional`
+\item \code{city}: \code{PlaceName}
+\item \code{state}: \code{StateName}
+\item \code{zip_code}: \code{ZipCode}
+}
 }
 \details{
+In addition to the cleaning steps described in the arguments, the street number is coerced
+to a numeric after removing non-numeric characters.
+See \code{addr_tag()} for details on address component tagging.
+
 In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for \code{StreetName}),
 then these are concatenated together, separated by a space in the order they appeared in the address.
+
+Compared to using \code{addr()}, \code{as_addr()} processes input character strings such that
+parsing is done once per unique input, usually speeding up address parsing in real-world
+datasets where address strings are often duplicated across observations.
 }
 \examples{
-addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
+as_addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
 }
