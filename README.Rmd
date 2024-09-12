@@ -4,12 +4,6 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/hashdress)](https://CRAN.R-project.org/package=hashdress)
-[![R-CMD-check](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -22,7 +16,11 @@ knitr::opts_chunk$set(
 # addr
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/hashdress)](https://CRAN.R-project.org/package=hashdress)
+[![R-CMD-check](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cole-brokamp/addr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
+
 
 
 Addresses that were not validated at the time of collection are often heterogenously formatted, making them difficult to directly compare. 
@@ -72,22 +70,31 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229",
     "5130 RAPID RUN RD CINCINNATI OHIO 45238",
     "5131 RAPID RUN RD CINCINNATI OHIO 45238"
 )) |>
-  addr_match(cagis_addr$cagis_addr)
+  addr_match(cagis_addr()$cagis_addr)
 ```
 
 Use the matched addr vector to merge in address-specific data in the included `cagis_addr` object.
 
 ```{r}
 addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
-  addr_match(cagis_addr$cagis_addr) |>
-  tibble::enframe(name = "input_addr", value = "cagis_addr") |>
-  dplyr::mutate(cagis_addr = purrr::list_c(cagis_addr)) |>
-  dplyr::left_join(cagis_addr, by = "cagis_addr")
+  addr_match(cagis_addr()$cagis_addr) |>
+  tibble::enframe(name = "input_addr", value = "ca") |>
+  dplyr::mutate(ca = purrr::list_c(ca)) |>
+  dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
 ```
 
-Intersect s2 locations with TIGER/Line census block group identifiers:
-
+If exact matching fails, use matching to TIGER street range files from the US census:
 
 ```{r}
-tiger_block_groups(s2::as_s2_cell(c("8841b39a7c46e25f", "8841a45555555555")), year = "2023")
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+  addr_match_tiger_street_ranges()
+```
+
+Because the addresses are possibly located on more than one street range geography, use the `summarize` argument to return the centroid of each set of matched street ranges and then add TIGER/Line census block group identifers via geospatial intersection:
+
+```{r}
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+  addr_match_tiger_street_ranges(county = "39061", summarize = "centroid") |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(census_bg_id = tiger_block_groups(s2::as_s2_cell(s2_geography)))
 ```

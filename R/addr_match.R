@@ -8,6 +8,12 @@
 #' @param x an addr vector to match
 #' @param ref_addr an addr vector to search for matches in
 #' @return a list of matching reference addr vectors for each addr in x
+#' @examples
+#' addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+#'   addr_match(cagis_addr()$cagis_addr) |>
+#'   tibble::enframe(name = "input_addr", value = "ca") |>
+#'   dplyr::mutate(ca = purrr::list_c(ca)) |>
+#'   dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
 #' @export
 addr_match <- function(x, ref_addr) {
   ia <- stats::na.omit(unique(as_addr(unique(x))))

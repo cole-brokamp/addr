@@ -58,7 +58,9 @@ get_tiger_street_ranges <- function(county, year = "2022") {
 #'
 #' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "union")
 #'
-#' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid")
+#' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid") |>
+#'   dplyr::bind_rows() |>
+#'   dplyr::mutate(census_bg_id = tiger_block_groups(s2::as_s2_cell(s2_geography)))
 addr_match_tiger_street_ranges <- function(x, county = "39061", year = "2022", summarize = c("none", "union", "centroid")) {
   stopifnot(inherits(x, "addr"))
   summarize <- rlang::arg_match(summarize)
