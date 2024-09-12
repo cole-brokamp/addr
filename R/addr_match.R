@@ -8,6 +8,12 @@
 #' @param x an addr vector to match
 #' @param ref_addr an addr vector to search for matches in
 #' @return a list of matching reference addr vectors for each addr in x
+#' @examples
+#' addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+#'   addr_match(cagis_addr()$cagis_addr) |>
+#'   tibble::enframe(name = "input_addr", value = "ca") |>
+#'   dplyr::mutate(ca = purrr::list_c(ca)) |>
+#'   dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
 #' @export
 addr_match <- function(x, ref_addr) {
   ia <- stats::na.omit(unique(as_addr(unique(x))))
@@ -34,7 +40,8 @@ addr_match <- function(x, ref_addr) {
 
 # returns a list the same length as the input addresses where each item is a character vector of the unique matched zip codes in the reference addresses
 addr_match_zip <- function(input_addr, ref_addr) {
-  c(ia_zips, ra_zips) %<-% lapply(list(input_addr, ref_addr), \(.) unique(vctrs::field(., "zip_code")))
+  ia_zips <- unique(vctrs::field(input_addr, "zip_code"))
+  ra_zips <- unique(vctrs::field(ref_addr, "zip_code"))
   match_lookup <-
     stringdist::stringdistmatrix(ia_zips, ra_zips, method = "osa") |>
     apply(MARGIN = 1, FUN = \(.) which(. <= 0)) |>
@@ -50,12 +57,14 @@ addr_match_line_one <- function(input_addr, ref_addr) {
   exact_street_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_name"),
-      vctrs::field(ref_addr, "street_name")) |>
+      vctrs::field(ref_addr, "street_name")
+    ) |>
     apply(MARGIN = 1, FUN = \(.) which(. == 0), simplify = FALSE)
   one_off_street_matches <-
     stringdist::stringdistmatrix(
       vctrs::field(input_addr, "street_name"),
-      vctrs::field(ref_addr, "street_name")) |>
+      vctrs::field(ref_addr, "street_name")
+    ) |>
     apply(MARGIN = 1, FUN = \(.) which(. == 1), simplify = FALSE)
   street_type_matches <-
     stringdist::stringdistmatrix(
@@ -85,6 +94,34 @@ addr_match_line_one <- function(input_addr, ref_addr) {
     purrr::map(\(.) ref_addr[.]) |>
     stats::setNames(as.character(input_addr))
   return(out)
+}
+
+# returns a list of possible addr (street name and type) matches (by number) in ref_addr for each addr in input_addr
+addr_match_street <- function(input_addr, ref_addr,
+                              stringdist_match = c("osa_lt_1", "exact"),
+                              match_street_type = TRUE) {
+  sd_m <- rlang::arg_match(stringdist_match)
+
+  street_name_dist <-
+    stringdist::stringdistmatrix(vctrs::field(input_addr, "street_name"), vctrs::field(ref_addr, "street_name"))
+
+  exact_matches <- apply(street_name_dist, MARGIN = 1, FUN = \(.) which(. == 0), simplify = FALSE)
+
+  if (sd_m == "exact") {
+    the_matches <- exact_matches
+  } else if (sd_m == "osa_lt_1") {
+    one_off_matches <- apply(street_name_dist, MARGIN = 1, FUN = \(.) which(. == 1), simplify = FALSE)
+    the_matches <- ifelse(lapply(exact_matches, length) != 0, exact_matches, one_off_matches)
+  }
+
+  if (match_street_type) {
+    street_type_matches <-
+      stringdist::stringdistmatrix(vctrs::field(input_addr, "street_type"), vctrs::field(ref_addr, "street_type")) |>
+      apply(MARGIN = 1, FUN = \(.) which(. == 0), simplify = FALSE)
+    the_matches <- purrr::map2(the_matches, street_type_matches, intersect)
+  }
+
+  return(the_matches)
 }
 
 utils::globalVariables(c("ia_zips", "ra_zips"))

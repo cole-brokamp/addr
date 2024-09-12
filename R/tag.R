@@ -1,4 +1,5 @@
 #' Tag components of an address string
+#' 
 #' The address components are tagged using a [rust port](https://github.com/boydjohnson/usaddress-rs) of
 #' [usaddress](https://github.com/datamade/usaddress).
 #' Component names are based upon the [United States Thoroughfare,

@@ -21,3 +21,10 @@ A list of matching reference addr vectors less than or equal to the specified
 distances are returned.
 See \code{stringdist::stringdist-metrics} for more details on string metrics and the optimal string alignment (\code{osa}) method.
 }
+\examples{
+addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+  addr_match(cagis_addr()$cagis_addr) |>
+  tibble::enframe(name = "input_addr", value = "ca") |>
+  dplyr::mutate(ca = purrr::list_c(ca)) |>
+  dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
+}

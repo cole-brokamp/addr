@@ -1,24 +1,31 @@
-#' Create a new addr object
+#' Create a new addr vector
 #'
-#' An addr object is created by converting messy, real-world mailing addresses in a
-#' character vector into standardized address tags for comparison and lookup with `addr_tag()`.
-#' By default, text is cleaned with `clean_address_text()`,
-#' ZIP codes are restricted to the first five digits and set to missing
-#' if they contain any non-digit characters,
-#' street name post types are expanded (e.g., "Ave" -> "Avenue"),
-#' cardinal directions are abbreviated (e.g. "west" -> "W"),
-#' and non-digit characters are removed from the street number.
+#' An addr vector is created by converting messy, real-world mailing addresses in a
+#' character vector into a list of standardized address tags that behaves like a vector.
+#' `addr()` (and `as_addr()`) vectors are a list of address tags under the hood, constructed
+#' by tagging address components using `addr_tag()` and combining them into specific fields:
+#' - `street_number`: `AddressNumber`
+#' - `street_name`: `StreetNamePreType`, `StreetNamePreDirectional`, `StreetName`
+#' - `street_type`: `StreetNamePostType`, StreetNamePostDirectional`
+#' - `city`: `PlaceName`
+#' - `state`: `StateName`
+#' - `zip_code`: `ZipCode`
+#'
 #' @details
+#' In addition to the cleaning steps described in the arguments, the street number is coerced
+#' to a numeric after removing non-numeric characters.
+#' See `addr_tag()` for details on address component tagging.
+#' 
 #' In the case of an address having more than one word for a tag (e.g., "Riva Ridge" for `StreetName`),
 #' then these are concatenated together, separated by a space in the order they appeared in the address.
 #' @param x a character vector of address strings
 #' @param clean_address_text logical; use `clean_address_text()` to clean address text prior to tagging?
-#' @param expand_street_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags?
-#' @param abbrev_cardinal_dir logical; abbreviate cardinal directions?
+#' @param expand_street_type logical; use `expand_post_type()` to expand `StreetNamePostType` tags? (e.g., "Ave" -> "Avenue")
+#' @param abbrev_cardinal_dir logical; abbreviate cardinal directions? (e.g., "west" -> "w")
 #' @param clean_zip_code logical; remove any non-digit (or hyphen) characters and truncate tagged ZIP Code to 5 characters?
 #' @export
 #' @examples
-#' addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
+#' as_addr(c("3333 Burnet Ave Cincinnati OH 45229", "1324 Burnet Ave Cincinnati OH 45229"))
 addr <- function(x = character(),
                  clean_address_text = TRUE,
                  expand_street_type = TRUE,
@@ -66,6 +73,25 @@ addr <- function(x = character(),
     zip_code = vec_cast(toi$zip_code, character())
   )
 }
+
+#' Coerce a character vector to an addr vector
+#'
+#' @details Compared to using `addr()`, `as_addr()` processes input character strings such that
+#' parsing is done once per unique input, usually speeding up address parsing in real-world
+#' datasets where address strings are often duplicated across observations.
+#' @param ... used to pass arguments in `as_addr` to underlying `addr()`
+#' @rdname addr
+#' @export
+as_addr <- function(x, ...) {
+  if (inherits(x, "addr")) {
+    return(x)
+  }
+  ux <- unique(x)
+  u_out <- as.list(addr(ux, ...))
+  names(u_out) <- ux
+  purrr::list_c(u_out[x])
+}
+
 
 new_addr <- function(street_number = numeric(),
                      street_name = character(),
@@ -122,25 +148,6 @@ as.character.addr <- function(x, ...) {
 #' @export
 as.data.frame.addr <- function(x, ...) {
   vctrs::vec_data(x)
-}
-
-#' Coerce a character vector to an addr vector
-#'
-#' Compared to using `addr()`, `as_addr()` processes input character strings such that
-#' parsing is done once per unique input, usually speeding up address parsing in real-world
-#' datasets where address strings are often duplicated across observations.
-#' @param x a character vector or addr vector
-#' @param ... arguments passed onto `addr()`
-#' @return an addr vector
-#' @export
-as_addr <- function(x, ...) {
-  if (inherits(x, "addr")) {
-    return(x)
-  }
-  ux <- unique(x)
-  u_out <- as.list(addr(ux, ...))
-  names(u_out) <- ux
-  purrr::list_c(u_out[x])
 }
 
 #' @export

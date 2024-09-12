@@ -1,9 +1,7 @@
 use extendr_api::prelude::*;
 
 /// Return list of lists of address tags to R.
-/// @param input a character vector of addresses
-/// @rdname addr_tag
-/// @export
+/// @param input character string of addresses
 #[extendr]
 fn usaddress_tag(input: Vec<String>) -> Robj {
     let ta: Vec<_> = input
