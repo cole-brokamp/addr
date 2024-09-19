@@ -7,6 +7,10 @@
       <addr[1]>
       [1] 781 Greenwood Avenue Cincinnati OH 45229
       
+      $`781 Greenwood Avenue Cincinnati OHIO 45229`
+      <addr[1]>
+      [1] 781 Greenwood Avenue Cincinnati OH 45229
+      
       $`515 Forest Avenue Cincinnati OHIO 45229`
       <addr[1]>
       [1] 515 Forest Avenue Cincinnati OH 45229
@@ -55,7 +59,7 @@
       $`222 Central Parkway Cincinnati OHIO 45202`
       <addr[0]>
       
-      $<NA>
+      $`4571 Timberlake Drive Batavia OHIO 45103`
       NULL
       
       $`31 Highridge Drive Loveland OHIO 45140`
