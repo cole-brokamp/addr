@@ -1,5 +1,4 @@
 test_that("addr_match_street() works", {
-
   addr_match_street(
     addr(c("224 Woolper Ave Cincinnati OH 45220", "123 Nain Street Cincinnati OH 45123", "3333 Burnet Ave Cincinnati OH 45219")),
     addr(c("Woolper Ave", "Main Street", "Burnet Ave", "Bulnet Ave"))
@@ -32,15 +31,30 @@ test_that("addr_match_street() works", {
     stringdist_match = "exact"
   ) |>
     expect_identical(list(1L, integer(0), 3L))
+})
 
+test_that("addr_match_street_name_and_number works", {
+  as_addr(c(
+    "222 E Central Parkway Foofyville SJ 00000",
+    "222 East Central Parkway",
+    "221 E Central Parkway Somewhere OS 00000",
+    "222 East Central Cincinnati"
+  )) |>
+    addr_match_street_name_and_number(as_addr(c("222 E CENTRAL PKWY", "221 E CENTRAL PKWY", "222 CENTRAL PKWY", "222 E CENTRAL PKWY"))) |>
+    sapply(length) |>
+    expect_identical(c(
+      `222 E Central Parkway Foofyville SJ 00000` = 2L, `222 E Central Parkway` = 2L,
+      `221 E Central Parkway Somewhere OS 00000` = 1L, `222 E Central Cincinnati` = 0L
+    ))
 })
 
 test_that("addr_match works", {
-
   addr_match(
-    addr(c("222 E Central Parkway Cincinnati OH 45000",
-           "222 East Central Parkway Cincinnati OH 45000",
-           "222 East Central Cincinnati OH 45000")),
+    addr(c(
+      "222 E Central Parkway Cincinnati OH 45000",
+      "222 East Central Parkway Cincinnati OH 45000",
+      "222 East Central Cincinnati OH 45000"
+    )),
     addr("222 E CENTRAL PKWY CINCINNATI OH 45000")
   ) |>
     purrr::list_c(ptype = addr()) |>
@@ -85,29 +99,54 @@ test_that("addr_match works", {
 
 
 test_that("addr_match with cagis works", {
-
   my_addresses <- c(
     "781 GREENWOOD AVE APT 1 CINCINNATI OHIO 45229",
+    "781 GREENWOOD AV CINCINNATI OHIO 45229",
     "515 FOREST AVE CINCINNATI OHIO 45229",
     "1540 DUDLEY WALK APT F CINCINNATI OHIO 45214",
-    "3333 BURNET AVE CINCINNATI OH 45219",
+    "3333 BURNET AVE CINCINNATI OH 45219", # wrong zipcode
     "3333 BURNET AVE CINCINNATI OH 45229",
     "806 BLAIR AVE APT 12 CINCINNATI OHIO 45229",
     "300 OAK CREEK CT 13 FAIRFIELD OHIO 45014",
     "5130 RAPID RUN RD CINCINNATI OHIO 45238",
-    "5131 RAPID RUN RD CINCINNATI OHIO 45238",
+    "5131 RAPID RUN RD CINCINNATI OHIO 45238", # off by one street number
     "2583 RIVERSIDE DR CINCINNATI OHIO 45202",
     "7839 DAWN RD APT 6 CINCINNATI OHIO 45237",
     "222 EAST CENTRAL PKWY CINCINNATI OH 45202", # JFS
     "222 E CENTRAL PKWY CINCINNATI OHIO 45202", # JFS
-    "222 CENTRAL PKWY CINCINNATI OHIO 45202", # JFS
+    "222 CENTRAL PKWY CINCINNATI OHIO 45202", # missng the East
     "4571 TIMBERLAKE DR BATAVIA OHIO 45103", # outside reference addr zip codes
     "31 HIGHRIDGE DR LOVELAND OHIO 45140",
     "117 E 12TH ST CINCINNATI, OH 45202" # Greater Cinti Coalition for The Homeless
   )
 
-  cagis_matches <- addr_match(addr(my_addresses), cagis_addr()$cagis_addr)
+  cagis_matches <- addr_match(as_addr(my_addresses), cagis_addr()$cagis_addr)
 
-  expect_type(cagis_matches, "list")
+  sapply(cagis_matches, length) |>
+    expect_equal(
+      c(
+        `781 Greenwood Avenue Cincinnati OHIO 45229` = 1L,
+        `781 Greenwood Avenue Cincinnati OHIO 45229` = 1L,
+        `515 Forest Avenue Cincinnati OHIO 45229` = 1L,
+        `1540 Dudley Walk Cincinnati OHIO 45214` = 1L,
+        `3333 Burnet Avenue Cincinnati OH 45219` = 0L,
+        `3333 Burnet Avenue Cincinnati OH 45229` = 1L,
+        `806 Blair Avenue Cincinnati OHIO 45229` = 1L,
+        `300 Oak Creek Court Fairfield OHIO 45014` = 0L,
+        `5130 Rapid Run Road Cincinnati OHIO 45238` = 1L,
+        `5131 Rapid Run Road Cincinnati OHIO 45238` = 0L,
+        `2583 Riverside Drive Cincinnati OHIO 45202` = 1L,
+        `7839 Dawn Road Cincinnati OHIO 45237` = 1L,
+        `222 E Central Parkway Cincinnati OH 45202` = 1L,
+        `222 E Central Parkway Cincinnati OHIO 45202` = 1L,
+        `222 Central Parkway Cincinnati OHIO 45202` = 0L,
+        `4571 Timberlake Drive Batavia OHIO 45103` = 0L,
+        `31 Highridge Drive Loveland OHIO 45140` = 1L,
+        `117 E 12th Street Cincinnati OH 45202` = 1L
+      )
+    )
+
+  expect_identical(cagis_matches[[16]], NULL)
+  
   expect_snapshot(cagis_matches)
 })

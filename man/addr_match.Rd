@@ -2,17 +2,43 @@
 % Please edit documentation in R/addr_match.R
 \name{addr_match}
 \alias{addr_match}
+\alias{addr_match_street_name_and_number}
+\alias{addr_match_street}
 \title{matching addr vectors}
 \usage{
-addr_match(x, ref_addr)
+addr_match(
+  x,
+  ref_addr,
+  stringdist_match = c("osa_lt_1", "exact"),
+  match_street_type = TRUE
+)
+
+addr_match_street_name_and_number(x, ref_addr, ...)
+
+addr_match_street(
+  x,
+  ref_addr,
+  stringdist_match = c("osa_lt_1", "exact"),
+  match_street_type = TRUE
+)
 }
 \arguments{
 \item{x}{an addr vector to match}
 
 \item{ref_addr}{an addr vector to search for matches in}
+
+\item{stringdist_match}{method for determining string match of street name:
+"osa_lt_1" requires an optimized string distance less than 1; "exact" requires an exact match}
+
+\item{match_street_type}{logical; require street type to be identical to match?}
+
+\item{...}{specific matching options passed on to \code{addr_match_street()}}
 }
 \value{
-a list of matching reference addr vectors for each addr in x
+for \code{addr_match()} and \code{addr_match_street_name_number()},
+a named list of possible addr matches for each addr in \code{x}
+
+for addr_match_street, a list of possible addr matches for each addr in \code{x} (as \code{ref_addr} indices)
 }
 \description{
 For an addr vector, the string distances are calculated between a reference addr vector (\code{ref_addr}).
