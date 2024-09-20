@@ -14,7 +14,13 @@ addr_match(
   simplify = TRUE
 )
 
-addr_match_street_name_and_number(x, ref_addr, ...)
+addr_match_street_name_and_number(
+  x,
+  ref_addr,
+  stringdist_match = c("osa_lt_1", "exact"),
+  match_street_type = TRUE,
+  simplify = TRUE
+)
 
 addr_match_street(
   x,
@@ -36,8 +42,6 @@ addr_match_street(
 \item{simplify}{logical; randomly select one addr from multi-matches and return an
 addr() vector instead of a list? (empty addr vectors and NULL values are converted
 to NA)}
-
-\item{...}{specific matching options passed on to \code{addr_match_street()}}
 }
 \value{
 for \code{addr_match()} and \code{addr_match_street_name_number()},

@@ -40,7 +40,8 @@ test_that("addr_match_street_name_and_number works", {
     "221 E Central Parkway Somewhere OS 00000",
     "222 East Central Cincinnati"
   )) |>
-    addr_match_street_name_and_number(as_addr(c("222 E CENTRAL PKWY", "221 E CENTRAL PKWY", "222 CENTRAL PKWY", "222 E CENTRAL PKWY"))) |>
+    addr_match_street_name_and_number(as_addr(c("222 E CENTRAL PKWY", "221 E CENTRAL PKWY", "222 CENTRAL PKWY", "222 E CENTRAL PKWY")),
+                                      simplify = FALSE) |>
     sapply(length) |>
     expect_identical(c(
       `222 E Central Parkway Foofyville SJ 00000` = 2L, `222 E Central Parkway` = 2L,
@@ -100,6 +101,7 @@ test_that("addr_match works", {
 
 
 test_that("addr_match with cagis works", {
+
   my_addresses <- c(
     "781 GREENWOOD AVE APT 1 CINCINNATI OHIO 45229",
     "781 GREENWOOD AV CINCINNATI OHIO 45229",
