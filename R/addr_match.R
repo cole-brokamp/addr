@@ -7,16 +7,28 @@
 #' See `stringdist::stringdist-metrics` for more details on string metrics and the optimal string alignment (`osa`) method.
 #' @param x an addr vector to match
 #' @param ref_addr an addr vector to search for matches in
+#' @param simplify logical; randomly select one addr from multi-matches and return an
+#' addr() vector instead of a list? (empty addr vectors and NULL values are converted
+#' to NA)
 #' @returns for `addr_match()` and `addr_match_street_name_number()`,
 #' a named list of possible addr matches for each addr in `x`
 #' @examples
 #' addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
-#'   addr_match(cagis_addr()$cagis_addr) |>
+#'   addr_match(cagis_addr()$cagis_addr)
+#'
+#' addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
+#'   addr_match(cagis_addr()$cagis_addr, simplify = FALSE) |>
 #'   tibble::enframe(name = "input_addr", value = "ca") |>
 #'   dplyr::mutate(ca = purrr::list_c(ca)) |>
-#'   dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
+#'   dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr")) |>
+#'   tidyr::unnest(cols = c(cagis_addr_data)) |>
+#'   dplyr::select(-ca, -cagis_address)
 #' @export
-addr_match <- function(x, ref_addr, stringdist_match = c("osa_lt_1", "exact"), match_street_type = TRUE) {
+addr_match <- function(x,
+                       ref_addr,
+                       stringdist_match = c("osa_lt_1", "exact"),
+                       match_street_type = TRUE,
+                       simplify = TRUE) {
   ia <- stats::na.omit(unique(as_addr(x)))
   ra <- unique(as_addr(ref_addr))
 
@@ -43,6 +55,15 @@ addr_match <- function(x, ref_addr, stringdist_match = c("osa_lt_1", "exact"), m
 
   out <- matches[as.character(x)]
   names(out) <- as.character(x)
+
+  if (simplify) {
+    out <-
+      out |>
+      purrr::modify_if(\(.) length(.) > 1, sample, size = 1) |>
+      purrr::modify_if(\(.) length(.) == 0, \(.) NA) |>
+      purrr::list_c(ptype = addr())
+  }
+  
   return(out)
 }
 
