@@ -79,16 +79,10 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229",
     "5131 RAPID RUN RD CINCINNATI OHIO 45238"
 )) |>
   addr_match(cagis_addr()$cagis_addr)
-#> $`3333 Burnet Avenue Cincinnati OH 45229`
-#> <addr[1]>
-#> [1] 3333 Burnet Avenue Cincinnati OH 45229
-#> 
-#> $`5130 Rapid Run Road Cincinnati OHIO 45238`
-#> <addr[1]>
-#> [1] 5130 Rapid Run Road Delhi Township OH 45238
-#> 
-#> $`5131 Rapid Run Road Cincinnati OHIO 45238`
-#> <addr[0]>
+#> <addr[3]>
+#> [1] 3333 Burnet Avenue Cincinnati OH 45229     
+#> [2] 5130 Rapid Run Road Delhi Township OH 45238
+#> [3] NA
 ```
 
 Use the matched addr vector to merge in address-specific data in the
@@ -98,13 +92,12 @@ included `cagis_addr` object.
 addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
   addr_match(cagis_addr()$cagis_addr) |>
   tibble::enframe(name = "input_addr", value = "ca") |>
-  dplyr::mutate(ca = purrr::list_c(ca)) |>
   dplyr::left_join(cagis_addr(), by = c("ca" = "cagis_addr"))
 #> # A tibble: 2 × 3
-#>   input_addr                                                  ca cagis_addr_data
-#>   <chr>                                                   <addr> <list<tibble[,>
-#> 1 3333 Burnet Avenu…      3333 Burnet Avenue Cincinnati OH 45229         [1 × 6]
-#> 2 5130 Rapid Run Ro… 5130 Rapid Run Road Delhi Township OH 45238         [1 × 6]
+#>   input_addr                                          ca    cagis_addr_data
+#>        <int>                                      <addr> <list<tibble[,6]>>
+#> 1          1      3333 Burnet Avenue Cincinnati OH 45229            [1 × 6]
+#> 2          2 5130 Rapid Run Road Delhi Township OH 45238            [1 × 6]
 ```
 
 If exact matching fails, use matching to TIGER street range files from
