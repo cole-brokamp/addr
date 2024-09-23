@@ -67,7 +67,7 @@ out <-
   na.omit() |>
   mutate(census_bg_id = tiger_block_groups(s2, year = "2020"))
 
-saveRDS(out, "voter_geocode_addr.rds")
+saveRDS(out, "inst/voter_geocode_addr.rds")
 
 
 
