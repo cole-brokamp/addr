@@ -36,7 +36,7 @@ See stringdist::stringdist-metrics for more details on string metrics and the op
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>matching addr vectors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cole-brokamp/addr/blob/v0.2.0/R/addr_match.R" class="external-link"><code>R/addr_match.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cole-brokamp/addr/blob/main/R/addr_match.R" class="external-link"><code>R/addr_match.R</code></a></small>
       <div class="d-none name"><code>addr_match.Rd</code></div>
     </div>
 
@@ -50,7 +50,28 @@ See <code>stringdist::stringdist-metrics</code> for more details on string metri
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addr_match</span><span class="op">(</span><span class="va">x</span>, <span class="va">ref_addr</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addr_match</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">ref_addr</span>,</span>
+<span>  stringdist_match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"osa_lt_1"</span>, <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>  match_street_type <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">addr_match_street_name_and_number</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">ref_addr</span>,</span>
+<span>  stringdist_match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"osa_lt_1"</span>, <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>  match_street_type <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">addr_match_street</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">ref_addr</span>,</span>
+<span>  stringdist_match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"osa_lt_1"</span>, <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>  match_street_type <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -64,24 +85,50 @@ See <code>stringdist::stringdist-metrics</code> for more details on string metri
 <dt id="arg-ref-addr">ref_addr<a class="anchor" aria-label="anchor" href="#arg-ref-addr"></a></dt>
 <dd><p>an addr vector to search for matches in</p></dd>
 
+
+<dt id="arg-stringdist-match">stringdist_match<a class="anchor" aria-label="anchor" href="#arg-stringdist-match"></a></dt>
+<dd><p>method for determining string match of street name:
+"osa_lt_1" requires an optimized string distance less than 1; "exact" requires an exact match</p></dd>
+
+
+<dt id="arg-match-street-type">match_street_type<a class="anchor" aria-label="anchor" href="#arg-match-street-type"></a></dt>
+<dd><p>logical; require street type to be identical to match?</p></dd>
+
+
+<dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
+<dd><p>logical; randomly select one addr from multi-matches and return an
+addr() vector instead of a list? (empty addr vectors and NULL values are converted
+to NA)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list of matching reference addr vectors for each addr in x</p>
+    <p>for <code>addr_match()</code> and <code>addr_match_street_name_number()</code>,
+a named list of possible addr matches for each addr in <code>x</code></p>
+<p>for addr_match_street, a list of possible addr matches for each addr in <code>x</code> (as <code>ref_addr</code> indices)</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="addr.html">addr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"3333 Burnet Ave Cincinnati OH 45229"</span>, <span class="st">"5130 RAPID RUN RD CINCINNATI OHIO 45238"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">addr_match</span><span class="op">(</span><span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cagis_addr</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">addr_match</span><span class="op">(</span><span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cagis_addr</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;addr[2]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3333 Burnet Avenue Cincinnati OH 45229     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] 5130 Rapid Run Road Delhi Township OH 45238</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="addr.html">addr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"3333 Burnet Ave Cincinnati OH 45229"</span>, <span class="st">"5130 RAPID RUN RD CINCINNATI OHIO 45238"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">addr_match</span><span class="op">(</span><span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cagis_addr</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/enframe.html" class="external-link">enframe</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"input_addr"</span>, value <span class="op">=</span> <span class="st">"ca"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ca <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_c</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ca"</span> <span class="op">=</span> <span class="st">"cagis_addr"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   input_addr                                                  ca cagis_addr_data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;addr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&lt;tibble[,&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 3333 Burnet Avenu…      3333 Burnet Avenue Cincinnati OH 45229         <span style="color: #949494;">[1 × 6]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 5130 Rapid Run Ro… 5130 Rapid Run Road Delhi Township OH 45238         <span style="color: #949494;">[1 × 6]</span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ca"</span> <span class="op">=</span> <span class="st">"cagis_addr"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cagis_addr_data</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">ca</span>, <span class="op">-</span><span class="va">cagis_address</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   input_addr     cagis_address_place cagis_address_type cagis_s2 cagis_parcel_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;s2cell&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 3333 Burnet A… <span style="color: #BB0000;">NA</span>                  BLD                8841b39… 010400020052   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 5130 Rapid Ru… <span style="color: #BB0000;">NA</span>                  BLD                8841c9f… 054000510478   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: cagis_is_condo &lt;lgl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -93,7 +140,7 @@ See <code>stringdist::stringdist-metrics</code> for more details on string metri
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
