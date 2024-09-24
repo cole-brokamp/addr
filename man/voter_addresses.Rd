@@ -17,5 +17,6 @@ See \code{inst/make_example_addresses.R} for more details.
 are pasted together to create 242,133 unique addresses of registered voters in Hamilton County, OH.
 }
 \examples{
-voter_addresses()
+voter_addresses() |>
+  head()
 }

@@ -84,6 +84,7 @@ addr_match <- function(x,
 #' match addresses street names and numbers
 #'
 #' @rdname addr_match
+#' @export
 addr_match_street_name_and_number <- function(x, ref_addr, stringdist_match = c("osa_lt_1", "exact"), match_street_type = TRUE, simplify = TRUE) {
   street_name_matches <-
     addr_match_street(x, ref_addr, stringdist_match = stringdist_match, match_street_type = match_street_type)
@@ -105,6 +106,7 @@ addr_match_street_name_and_number <- function(x, ref_addr, stringdist_match = c(
 #'
 #' @returns for addr_match_street, a list of possible addr matches for each addr in `x` (as `ref_addr` indices)
 #' @rdname addr_match
+#' @export
 addr_match_street <- function(x, ref_addr,
                               stringdist_match = c("osa_lt_1", "exact"),
                               match_street_type = TRUE) {

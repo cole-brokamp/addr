@@ -26,7 +26,8 @@ cagis_addr <- function() {
 #' @returns a character vector
 #' @export
 #' @examples
-#' voter_addresses()
+#' voter_addresses() |>
+#'   head()
 voter_addresses <- function() {
   readRDS(fs::path_package("addr", "voter_addresses.rds"))
 }
