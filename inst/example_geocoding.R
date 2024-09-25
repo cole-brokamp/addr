@@ -18,7 +18,6 @@ d$matched_cagis_addr <-
     simplify = TRUE
   )
 
-
 # randomly select one s2 cell if more than one lat/lon was present for the same address (but different parcel_id)
 set.seed(0)
 
@@ -61,50 +60,10 @@ message(
   " (n = ", sum(is.na(d$s2)), ") of all addresses could not be matched"
 )
 
-out <-
-  d |>
-  select(-matched_cagis_addr) |>
-  na.omit() |>
-  mutate(census_bg_id = tiger_block_groups(s2, year = "2020"))
+saveRDS(d, "inst/voter_geocode_addr.rds")
 
-saveRDS(out, "inst/voter_geocode_addr.rds")
-
-
-
-#######################################
-
-
-
-
-# TODO: use degauss geocoder to compare census tract agreement? https://github.com/degauss-org/dht/blob/master/R/degauss_run.R
-
-
-ia_d <- tibble::tibble(address = voter_addresses())
-readr::write_csv(ia_d, "inst/voter_for_geocoding.csv")
-
-system2(
-  "docker",
-  c(
-    "run", "--rm",
-    "-v ${PWD}/inst:/tmp",
-    "ghcr.io/degauss-org/geocoder:3.3.0-v8",
-    "voter_for_geocoding.csv"
-  )
-)
-
-d <-
-  readr::read_csv("data/address_for_geocoding_geocoder_3.3.0_score_threshold_0.5.csv", col_types = readr::cols(
-    PAT_ENC_CSN_ID = readr::col_character(),
-    ADMIT_DATE = readr::col_date(format = "%Y-%m-%d"),
-    MRN = readr::col_character(),
-    address = readr::col_character(),
-    matched_street = readr::col_character(),
-    matched_zip = readr::col_double(),
-    matched_city = readr::col_character(),
-    matched_state = readr::col_character(),
-    lat = readr::col_double(),
-    lon = readr::col_double(),
-    score = readr::col_double(),
-    precision = readr::col_character(),
-    geocode_result = readr::col_character()
-  ))
+## out <-
+##   d |>
+##   select(-matched_cagis_addr) |>
+##   na.omit() |>
+##   mutate(census_bg_id = tiger_block_groups(s2, year = "2020"))
