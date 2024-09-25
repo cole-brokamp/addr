@@ -12,13 +12,12 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
   rlang::check_installed("sf", "read TIGER/Line census block group geographies")
   rlang::check_installed("s2", "s2 geometry calculations")
   if (!inherits(x, "s2_cell")) stop("x must be a s2_cell vector", call. = FALSE)
-  if (any(is.na(x))) stop("x must not contain any missing values", call. = FALSE)
   year <- rlang::arg_match(year)
   x_s2_geo <-
-    unique(x) |>
+    unique(stats::na.omit(x)) |>
     s2::s2_cell_to_lnglat() |>
     s2::as_s2_geography()
-  names(x_s2_geo) <- as.character(unique(x))
+  names(x_s2_geo) <- as.character(unique(stats::na.omit(x)))
   states <- tiger_states(year)
   the_states <- states[s2::s2_closest_feature(x_s2_geo, states$s2_geography), "GEOID", drop = TRUE]
   state_bgs <-
@@ -31,7 +30,7 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
     }) |>
     unlist() |>
     stats::setNames(unlist(purrr::map(the_s2s, names)))
-  return(out[as.character(x)])
+  return(stats::setNames(out[as.character(x)], NULL))
 }
 
 get_tiger_block_groups <- function(state, year) {
@@ -45,11 +44,11 @@ get_tiger_block_groups <- function(state, year) {
   }
   out <-
     sf::st_read(
-    paste0("/vsizip/", dest),
-    as_tibble = TRUE,
-    quiet = TRUE,
-    query = glue::glue("SELECT GEOID FROM tl_{year}_{state}_bg")
-  )
+      paste0("/vsizip/", dest),
+      as_tibble = TRUE,
+      quiet = TRUE,
+      query = glue::glue("SELECT GEOID FROM tl_{year}_{state}_bg")
+    )
   out$s2_geography <- s2::as_s2_geography(out$geometry)
   out <- sf::st_drop_geometry(out)
   return(out)
@@ -66,13 +65,12 @@ tiger_states <- function(year) {
   }
   out <-
     sf::st_read(
-    paste0("/vsizip/", dest),
-    as_tibble = TRUE,
-    quiet = TRUE,
-    query = glue::glue("SELECT GEOID FROM tl_{year}_us_state")
-  )
+      paste0("/vsizip/", dest),
+      as_tibble = TRUE,
+      quiet = TRUE,
+      query = glue::glue("SELECT GEOID FROM tl_{year}_us_state")
+    )
   out$s2_geography <- s2::as_s2_geography(out$geometry)
   out <- sf::st_drop_geometry(out)
   return(out)
 }
-
