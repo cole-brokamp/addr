@@ -1,6 +1,6 @@
+devtools::load_all()
 library(dplyr, warn.conflicts = FALSE)
 library(s2)
-library(addr)
 
 sessionInfo()
 
