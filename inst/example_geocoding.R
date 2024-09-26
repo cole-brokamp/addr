@@ -38,7 +38,7 @@ message(
 )
 
 t_matches <-
-  addr_match_tiger_street_ranges(d[cagis_no_match, "addr", drop = TRUE], "39061", summarize = "centroid") |>
+  addr_match_tiger_street_ranges(d[cagis_no_match, "addr", drop = TRUE], "39061", summarize = "centroid", street_only_match = TRUE) |>
   purrr::discard(\(.) length(.) < 1) |> # removes NULL
   purrr::discard(\(.) nrow(.) < 1) # removes empty data.frame
 
@@ -52,7 +52,6 @@ message(
 )
 
 d[d$addr %in% t_match_addr, "s2"] <- t_match_s2
-# TODO should match_tiger return street centroid if range is not matched????????
 
 message(
   cli::symbol$arrow_right, " ",
@@ -61,9 +60,3 @@ message(
 )
 
 saveRDS(d, "inst/voter_geocode_addr.rds")
-
-## out <-
-##   d |>
-##   select(-matched_cagis_addr) |>
-##   na.omit() |>
-##   mutate(census_bg_id = tiger_block_groups(s2, year = "2020"))
