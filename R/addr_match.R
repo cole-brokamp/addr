@@ -98,6 +98,13 @@ addr_match_street_name_and_number <- function(x, ref_addr, stringdist_match = c(
   out <-
     purrr::map(the_matches, \(.) ref_addr[.]) |>
     purrr::set_names(x)
+  if (simplify) {
+    out <-
+      out |>
+      purrr::modify_if(\(.) length(.) > 1, sample, size = 1) |>
+      purrr::modify_if(\(.) length(.) == 0, \(.) NA) |>
+      purrr::list_c(ptype = addr())
+  }
   return(out)
 }
 
