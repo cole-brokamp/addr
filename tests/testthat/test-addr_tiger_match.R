@@ -13,7 +13,26 @@ test_that("get_tiger_street_ranges() works", {
 
 test_that("addr_match_tiger_street_ranges() works", {
 
-  addr_match_tiger_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St"))) |>
-    expect_snapshot()
+  addr_match_tiger_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St")),
+    street_only_match = FALSE
+  ) |>
+    purrr::map(nrow) |>
+    expect_identical(list(
+      `224 Woolper Avenue` = 1L,
+      `3333 Burnet Avenue` = 2L,
+      `33333 Burnet Avenue` = 0L,
+      `609 Walnut Street` = NULL
+    ))
+                                 
+  addr_match_tiger_street_ranges(as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St")),
+    street_only_match = TRUE
+  ) |>
+    purrr::map(nrow) |>
+    expect_identical(list(
+      `224 Woolper Avenue` = 1L,
+      `3333 Burnet Avenue` = 2L,
+      `33333 Burnet Avenue` = 20L,
+      `609 Walnut Street` = NULL
+    ))
 
 })

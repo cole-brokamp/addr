@@ -10,7 +10,7 @@ cagis_addr()
 An example tibble created from the CAGIS addresses with a pre-calculated, unique \code{cagis_addr} vector column.
 The \code{cagis_addr_data} column is a list of tibbles because one CAGIS address can correspond to multiple
 parcel identifiers and address-level data (place, type, s2, etc.).
-See \code{data-raw/make_cagis_addr.R} for source code to create data, including filtering criteria:
+See \code{inst/make_cagis_addr.R} for source code to create data, including filtering criteria:
 \itemize{
 \item use only addresses that have \code{STATUS} of \code{ASSIGNED} or \code{USING} and are not orphaned (\code{ORPHANFLG == "N"})
 \item omit addresses with \code{ADDRTYPE}s that are milemarkers (\code{MM}), parks (\code{PAR}), infrastructure projects (\code{PRJ}),

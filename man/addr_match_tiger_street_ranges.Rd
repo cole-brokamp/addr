@@ -8,6 +8,7 @@ addr_match_tiger_street_ranges(
   x,
   county = "39061",
   year = "2022",
+  street_only_match = TRUE,
   summarize = c("none", "union", "centroid")
 )
 }
@@ -18,12 +19,16 @@ addr_match_tiger_street_ranges(
 
 \item{year}{year of tigris product}
 
+\item{street_only_match}{logical; consider an addr that matches on street name,
+but does not have a street number within the listed ranges a match?}
+
 \item{summarize}{optionally summarize matched street ranges as their union or centroid}
 }
 \value{
-a list of tigris street range tibbles matching the street name and containing the street number in x;
-a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
-that although a street was matched, there was no range containing the street number
+a list of matched tigris street range tibbles;
+a NULL value indicates that no street name was matched; if \code{street_only_match} is FALSE,
+a street range tibble with zero rows indicates that although a street was matched,
+there was no range containing the street number
 }
 \description{
 match an addr vector to a tigris street range
@@ -31,9 +36,9 @@ match an addr vector to a tigris street range
 \examples{
 my_addr <- as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St"))
 
-addr_match_tiger_street_ranges(my_addr, county = "39061")
+addr_match_tiger_street_ranges(my_addr, county = "39061", street_only_match = FALSE)
 
-addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "union")
+addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid")
 
 addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid") |>
   dplyr::bind_rows() |>
