@@ -83,3 +83,6 @@ d |>
   mutate(perc = scales::percent(n / sum(n), accuracy = 0.1)) |>
   arrange(desc(n)) |>
   knitr::kable(digits = 1)
+
+
+# TODO add cagis coordinates to compare?
