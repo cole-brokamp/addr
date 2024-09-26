@@ -31,3 +31,24 @@ cagis_addr <- function() {
 voter_addresses <- function() {
   readRDS(fs::path_package("addr", "voter_addresses.rds"))
 }
+
+#' Example real-world data with line-one-only addresses
+#'
+#' The Cincinnati Evicition Hotspots data was downloaded from
+#' [Eviction Labs](https://evictionlab.org/uploads/cincinnati_hotspots_media_report.csv)
+#' and contains characteristics of the top 100 buildings that are responsible for about 25% of
+#' all eviction filings in Cincinnati (from their "current through 8-31-2024" release).
+#' @details https://evictionlab.org/eviction-tracking/cincinnati-oh/
+#' @returns a tibble with 100 rows and 9 columns
+#' @export
+#' @examples
+#' elh_data() |>
+#'   dplyr::mutate(
+#'     n_filings = filings,
+#'     addr = as_addr(xstreet_clean),
+#'     cagis_addr = addr_match_street_name_and_number(addr, cagis_addr()$cagis_addr, simplify = TRUE),
+#'     .keep = "used"
+#'   )
+elh_data <- function() {
+  readRDS(fs::path_package("addr", "elh_data.rds"))
+}
