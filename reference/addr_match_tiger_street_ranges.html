@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">addr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  county <span class="op">=</span> <span class="st">"39061"</span>,</span>
 <span>  year <span class="op">=</span> <span class="st">"2022"</span>,</span>
+<span>  street_only_match <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  summarize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"union"</span>, <span class="st">"centroid"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -62,22 +63,28 @@
 <dd><p>year of tigris product</p></dd>
 
 
+<dt id="arg-street-only-match">street_only_match<a class="anchor" aria-label="anchor" href="#arg-street-only-match"></a></dt>
+<dd><p>logical; consider an addr that matches on street name,
+but does not have a street number within the listed ranges a match?</p></dd>
+
+
 <dt id="arg-summarize">summarize<a class="anchor" aria-label="anchor" href="#arg-summarize"></a></dt>
 <dd><p>optionally summarize matched street ranges as their union or centroid</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list of tigris street range tibbles matching the street name and containing the street number in x;
-a NULL value indicates that no street name was matched; a street range tibble with zero rows indicates
-that although a street was matched, there was no range containing the street number</p>
+    <p>a list of matched tigris street range tibbles;
+a NULL value indicates that no street name was matched; if <code>street_only_match</code> is FALSE,
+a street range tibble with zero rows indicates that although a street was matched,
+there was no range containing the street number</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">my_addr</span> <span class="op">&lt;-</span> <span class="fu"><a href="addr.html">as_addr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"224 Woolper Ave"</span>, <span class="st">"3333 Burnet Ave"</span>, <span class="st">"33333 Burnet Ave"</span>, <span class="st">"609 Walnut St"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, street_only_match <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`224 Woolper Avenue`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   TLID      s2_geography                                              from    to</span>
@@ -99,22 +106,24 @@ that although a street was matched, there was no range containing the street num
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, summarize <span class="op">=</span> <span class="st">"union"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, summarize <span class="op">=</span> <span class="st">"centroid"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`224 Woolper Avenue`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID      s2_geography                                              from    to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                                           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294 LINESTRING (-84.511197 39.149684, -84.511752 39.149788,…   100   299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID      s2_geography                    from    to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294 POINT (-84.5148163 39.1499943)   100   299</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3333 Burnet Avenue`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                s2_geography                                    from    to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103925697-103925699 LINESTRING (-84.500525 39.139737, -84.500403 …  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                s2_geography                    from    to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103925697-103925699 POINT (-84.5004091 39.1408146)  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`33333 Burnet Avenue`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 variables: TLID &lt;chr&gt;, s2_geography &lt;s2_geography&gt;, from &lt;dbl&gt;, to &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                                                  s2_geography  from    to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                 <span style="color: #949494; font-style: italic;">&lt;s2_geograp&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103925448-103925451-103925453-103925455-103925697-10… POINT (-84.…  <span style="text-decoration: underline;">2</span>000  <span style="text-decoration: underline;">3</span>599</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`609 Walnut Street`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -123,11 +132,12 @@ that although a street was matched, there was no range containing the street num
 <span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, summarize <span class="op">=</span> <span class="st">"centroid"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>census_bg_id <span class="op">=</span> <span class="fu"><a href="tiger_block_groups.html">tiger_block_groups</a></span><span class="op">(</span><span class="fu">s2</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/s2/reference/s2_cell.html" class="external-link">as_s2_cell</a></span><span class="op">(</span><span class="va">s2_geography</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                s2_geography                    from    to census_bg_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294           POINT (-84.5148163 39.1499943)   100   299 390610070002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 103925697-103925699 POINT (-84.5004091 39.1408146)  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399 390610270002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                                     s2_geography  from    to census_bg_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;s2_geograp&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294                                POINT (-84.…   100   299 390610070002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 103925697-103925699                      POINT (-84.…  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399 390610270002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 103925448-103925451-103925453-103925455… POINT (-84.…  <span style="text-decoration: underline;">2</span>000  <span style="text-decoration: underline;">3</span>599 390610270002</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
