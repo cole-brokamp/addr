@@ -3,12 +3,15 @@
 #' Addresses are matched to a set of reference addresses; if unmatched,
 #' they are next matched to TIGER street ranges by number and street name, returning the centroid
 #' of the (unionized) matched street range(s).
-#' @param x an addr vector to geocode
+#' @param x an addr vector (or character vector of address strings) to geocode
 #' @param ref_addr an addr vector to search for matches in
 #' @param ref_s2 a s2_cell vector of locations for each ref_addr
 #' @param county character county identifer for TIGER street range files to search for matches in
 #' @param year character year for TIGER street range files to search for matches in
-#' @returns a s2_cell vector
+#' @returns a tibble with columns: `addr` contains `x` converted to an `addr` vector,
+#' `s2` contains the resulting geocoded s2 cells as an `s2cell` vector,
+#' `match_method` is a factor with levels `ref_addr`, `tiger_range`, `none` to record
+#' the method by which each address was matched
 #' @export
 #' @details
 #'
@@ -77,5 +80,12 @@ addr_match_geocode <- function(x,
   x_mm[x_which_addr_tiger_match] <- "tiger_range"
   x_mm[is.na(x_mm)] <- "none"
 
-  return(tibble::tibble(addr = x_addr, s2 = x_s2, match_method = x_mm))
+  out <-
+    tibble::tibble(
+      addr = x_addr,
+      s2 = x_s2,
+      match_method = factor(x_mm, levels = c("ref_addr", "tiger_range", "none"))
+    )
+
+  return(out)
 }

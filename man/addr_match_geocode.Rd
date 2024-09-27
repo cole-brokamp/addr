@@ -9,12 +9,11 @@ addr_match_geocode(
   ref_addr = cagis_addr()$cagis_addr,
   ref_s2,
   county = "39061",
-  year = "2022",
-  ...
+  year = "2022"
 )
 }
 \arguments{
-\item{x}{an addr vector to geocode}
+\item{x}{an addr vector (or character vector of address strings) to geocode}
 
 \item{ref_addr}{an addr vector to search for matches in}
 
@@ -23,11 +22,12 @@ addr_match_geocode(
 \item{county}{character county identifer for TIGER street range files to search for matches in}
 
 \item{year}{character year for TIGER street range files to search for matches in}
-
-\item{...}{passed to \code{addr_match} (i.e., \code{stringdist_match}, \code{match_street_type})}
 }
 \value{
-a s2_cell vector
+a tibble with columns: \code{addr} contains \code{x} converted to an \code{addr} vector,
+\code{s2} contains the resulting geocoded s2 cells as an \code{s2cell} vector,
+\code{match_method} is a factor with levels \code{ref_addr}, \code{tiger_range}, \code{none} to record
+the method by which each address was matched
 }
 \description{
 Addresses are matched to a set of reference addresses; if unmatched,
@@ -56,7 +56,7 @@ Among those that were geocoded by both, 97.7\% were geocoded to the same census 
 \examples{
 cagis_s2 <-
   cagis_addr()$cagis_addr_data |>
-    purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
-      purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
-addr_match_geocode(x = , ref_s2 = cagis_s2)
+  purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
+  purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
+addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2)
 }
