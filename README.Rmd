@@ -37,7 +37,9 @@ pak::pak("cole-brokamp/addr")
 
 addr requires a working [Rust](https://www.rust-lang.org/learn/get-started) toolchain; install one using [rustup](https://www.rust-lang.org/tools/install).
 
-## Example
+## Using
+
+### addr vectors in R
 
 The `addr` package provides the `addr` R object, which stores standardized address tags, but acts like a usual vector in R:
 
@@ -62,6 +64,8 @@ or
 addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 45140")) |>
   as.character()
 ```
+
+### addr matching
 
 List all of the potentially matching `addr`s in a reference set of `addr`s with `addr_match()`. The code below matches input addresses to the reference set of all addresses in Hamilton County, OH included in the package:
 
@@ -96,4 +100,21 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO
   addr_match_tiger_street_ranges(county = "39061", summarize = "centroid") |>
   dplyr::bind_rows() |>
   dplyr::mutate(census_bg_id = tiger_block_groups(s2::as_s2_cell(s2_geography)))
+```
+
+The above process is conducted, with default matching arguments, in the function `addr_match_geocode`, which requires a vector of reference s2 cell locations:  **As of now, this process only works with the `cagis_s2` available as below and for matching within Hamilton County, OH (36061) using 2022 TIGER street range files**
+
+```{r}
+
+# select one s2 cell at random from addresses with more than one parcel identifier and coordinates
+cagis_s2 <-
+   cagis_addr()$cagis_addr_data |>
+   purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
+   purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
+   
+addr_match_geocode(x = sample(voter_addresses(), 100), 
+                   ref_addr = cagis_addr()$cagis_addr,
+				   ref_s2 = cagis_s2,
+				   county = "39061",
+				   year = "2022")
 ```

@@ -6,7 +6,7 @@
 #' by tagging address components using `addr_tag()` and combining them into specific fields:
 #' - `street_number`: `AddressNumber`
 #' - `street_name`: `StreetNamePreType`, `StreetNamePreDirectional`, `StreetName`
-#' - `street_type`: `StreetNamePostType`, StreetNamePostDirectional`
+#' - `street_type`: `StreetNamePostType`, `StreetNamePostDirectional`
 #' - `city`: `PlaceName`
 #' - `state`: `StateName`
 #' - `zip_code`: `ZipCode`

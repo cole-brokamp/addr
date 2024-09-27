@@ -31,7 +31,9 @@ addr requires a working
 [Rust](https://www.rust-lang.org/learn/get-started) toolchain; install
 one using [rustup](https://www.rust-lang.org/tools/install).
 
-## Example
+## Using
+
+### addr vectors in R
 
 The `addr` package provides the `addr` R object, which stores
 standardized address tags, but acts like a usual vector in R:
@@ -67,6 +69,8 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "202 Riva Ridge Ct Cincinnati OH 4
 #> [1] "3333 Burnet Avenue Cincinnati OH 45229"  
 #> [2] "202 Riva Ridge Court Cincinnati OH 45140"
 ```
+
+### addr matching
 
 List all of the potentially matching `addr`s in a reference set of
 `addr`s with `addr_match()`. The code below matches input addresses to
@@ -135,4 +139,39 @@ addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO
 #>   <chr>               <s2_geography>                 <dbl> <dbl> <chr>       
 #> 1 103925697-103925699 POINT (-84.5004091 39.1408146)  3247  3399 390610270002
 #> 2 650346231           POINT (-84.6103702 39.1110311)  5094  5199 390610214011
+```
+
+The above process is conducted, with default matching arguments, in the
+function `addr_match_geocode`, which requires a vector of reference s2
+cell locations: **As of now, this process only works with the `cagis_s2`
+available as below and for matching within Hamilton County, OH (36061)
+using 2022 TIGER street range files**
+
+``` r
+
+# select one s2 cell at random from addresses with more than one parcel identifier and coordinates
+cagis_s2 <-
+   cagis_addr()$cagis_addr_data |>
+   purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
+   purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
+   
+addr_match_geocode(x = sample(voter_addresses(), 100), 
+                   ref_addr = cagis_addr()$cagis_addr,
+                   ref_s2 = cagis_s2,
+                   county = "39061",
+                   year = "2022")
+#> # A tibble: 100 × 3
+#>                                           addr s2               match_method
+#>                                         <addr> <s2cell>         <fct>       
+#>  1     411 Pedretti Avenue Cincinnati OH 45238 8841b6192539a2e5 ref_addr    
+#>  2    7432 Bayswater Drive Cincinnati OH 45255 8841af3264f87405 tiger_range 
+#>  3      5366 Dickens Drive Cincinnati OH 45241 884051140ea170a7 ref_addr    
+#>  4        245 Mcguire Lane Cincinnati OH 45215 88405286586bc095 ref_addr    
+#>  5     3909 Dickson Avenue Cincinnati OH 45229 8841b30e55fab54d ref_addr    
+#>  6      4025 Egbert Avenue Cincinnati OH 45220 8841b37c962f5a3b ref_addr    
+#>  7   11451 Folkstone Drive Cincinnati OH 45240 88404ebd7161497d ref_addr    
+#>  8  1860 Queen City Avenue Cincinnati OH 45214 8841b43472fe3997 ref_addr    
+#>  9 9797 Cooper Woods Court Cincinnati OH 45241 88405251fbc59f91 ref_addr    
+#> 10       3815 Lincoln Road Cincinnati OH 45247 88403554febe6d93 ref_addr    
+#> # ℹ 90 more rows
 ```
