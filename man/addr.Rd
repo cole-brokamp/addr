@@ -36,7 +36,7 @@ by tagging address components using \code{addr_tag()} and combining them into sp
 \itemize{
 \item \code{street_number}: \code{AddressNumber}
 \item \code{street_name}: \code{StreetNamePreType}, \code{StreetNamePreDirectional}, \code{StreetName}
-\item \code{street_type}: \code{StreetNamePostType}, StreetNamePostDirectional`
+\item \code{street_type}: \code{StreetNamePostType}, \code{StreetNamePostDirectional}
 \item \code{city}: \code{PlaceName}
 \item \code{state}: \code{StateName}
 \item \code{zip_code}: \code{ZipCode}

@@ -31,7 +31,7 @@ Imports:
 SystemRequirements: Cargo (Rust's package manager), rustc
 Config/testthat/edition: 3
 Config/testthat/parallel: true
-Config/testthat/start-first: addr_match*, tiger_block_groups
+Config/testthat/start-first: addr_match*, s2_join_tiger_bg
 Depends: 
     R (>= 2.10)
 LazyData: true

@@ -133,7 +133,7 @@ identifers via geospatial intersection:
 addr(c("3333 Burnet Ave Cincinnati OH 45229", "5130 RAPID RUN RD CINCINNATI OHIO 45238")) |>
   addr_match_tiger_street_ranges(county = "39061", summarize = "centroid") |>
   dplyr::bind_rows() |>
-  dplyr::mutate(census_bg_id = tiger_block_groups(s2::as_s2_cell(s2_geography)))
+  dplyr::mutate(census_bg_id = s2_join_tiger_bg(s2::as_s2_cell(s2_geography)))
 #> # A tibble: 2 × 5
 #>   TLID                s2_geography                    from    to census_bg_id
 #>   <chr>               <s2_geography>                 <dbl> <dbl> <chr>       
