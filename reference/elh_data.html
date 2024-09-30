@@ -61,16 +61,22 @@ all eviction filings in Cincinnati (from their "current through 8-31-2024" relea
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">elh_data</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    n_filings <span class="op">=</span> <span class="va">filings</span>,</span></span>
-<span class="r-in"><span>    addr <span class="op">=</span> <span class="fu"><a href="addr.html">as_addr</a></span><span class="op">(</span><span class="va">xstreet_clean</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    cagis_addr <span class="op">=</span> <span class="fu"><a href="addr_match.html">addr_match_street_name_and_number</a></span><span class="op">(</span><span class="va">addr</span>, <span class="fu"><a href="cagis_addr.html">cagis_addr</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cagis_addr</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    .keep <span class="op">=</span> <span class="st">"used"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::mutate(elh_data(), n_filings = filings, addr = as_addr(xstreet_clean),     cagis_addr = addr_match_street_name_and_number(addr, cagis_addr()$cagis_addr,         simplify = TRUE), .keep = "used"):</span> <span style="color: #00BBBB;">ℹ</span> In argument: `cagis_addr = addr_match_street_name_and_number(...)`.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> protect(): protection stack overflow</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">elh_data</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    position time_period end_date   xplaintiff xstreet_clean filings top100   lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        1 2023-09-01  2024-08-31 CINCINNAT… 2958 HIGHFOR…     265  0.247  39.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>        2 2023-09-01  2024-08-31 FOUR TOWE… 2705 E TOWER…     133  0.247  39.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>        3 2023-09-01  2024-08-31 NPRC PARK… 2310 WALDEN …      77  0.247  39.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>        4 2023-09-01  2024-08-31 LAFEUILLE… 2680 LAFEUIL…      67  0.247  39.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>        5 2023-09-01  2024-08-31 LUMA PROP… 1903 DREXEL …      57  0.247  39.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>        6 2023-09-01  2024-08-31 HOMES, PA… 1528 DUDLEY …      56  0.247  39.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>        7 2023-09-01  2024-08-31 UPTOWN CO… 400 W 9TH ST       55  0.247  39.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>        8 2023-09-01  2024-08-31 NPRC PARK… 2325 WALDEN …      54  0.247  39.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>        9 2023-09-01  2024-08-31 MALLARD L… 11923 CROSSI…      53  0.247  39.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       10 2023-09-01  2024-08-31 NPRC APEX… 5317 EASTKNO…      52  0.247  39.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: lon &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

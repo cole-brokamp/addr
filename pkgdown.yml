@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-09-26T13:45Z
+last_built: 2024-09-30T20:37Z
 urls:
   reference: https://cole-brokamp.github.io/addr/reference
   article: https://cole-brokamp.github.io/addr/articles
