@@ -19,11 +19,5 @@ all eviction filings in Cincinnati (from their "current through 8-31-2024" relea
 https://evictionlab.org/eviction-tracking/cincinnati-oh/
 }
 \examples{
-elh_data() |>
-  dplyr::mutate(
-    n_filings = filings,
-    addr = as_addr(xstreet_clean),
-    cagis_addr = addr_match_street_name_and_number(addr, cagis_addr()$cagis_addr, simplify = TRUE),
-    .keep = "used"
-  )
+elh_data()
 }

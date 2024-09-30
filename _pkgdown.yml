@@ -12,4 +12,32 @@ template:
     btn-border-radius: 0.25rem
     code_font:
       google: Source Code Pro
+reference:
+  - title: addr vector
+    contents:
+    - addr
+  - title: matching addr
+    contents:
+    - addr_match
+    - addr_match_tiger_street_ranges
+  - title: geocoding addr
+    contents:
+    - addr_match_geocode
+    - s2_join_tiger_bg
+  - title: address text
+    contents:
+    - clean_address_text
+    - expand_post_type
+    - addr_tag
+    - usaddress_tag
+  - title: get census geography data
+    contents:
+    - get_tiger_block_groups
+    - get_tiger_street_ranges
+    - tiger_states
+  - title: example address data
+    contents:
+    - cagis_addr
+    - voter_addresses
+    - elh_data
 

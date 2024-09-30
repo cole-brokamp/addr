@@ -42,5 +42,5 @@ addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid"
 
 addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid") |>
   dplyr::bind_rows() |>
-  dplyr::mutate(census_bg_id = tiger_block_groups(s2::as_s2_cell(s2_geography)))
+  dplyr::mutate(census_bg_id = s2_join_tiger_bg(s2::as_s2_cell(s2_geography)))
 }

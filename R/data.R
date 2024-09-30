@@ -42,13 +42,7 @@ voter_addresses <- function() {
 #' @returns a tibble with 100 rows and 9 columns
 #' @export
 #' @examples
-#' elh_data() |>
-#'   dplyr::mutate(
-#'     n_filings = filings,
-#'     addr = as_addr(xstreet_clean),
-#'     cagis_addr = addr_match_street_name_and_number(addr, cagis_addr()$cagis_addr, simplify = TRUE),
-#'     .keep = "used"
-#'   )
+#' elh_data()
 elh_data <- function() {
   readRDS(fs::path_package("addr", "elh_data.rds"))
 }

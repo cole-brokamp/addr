@@ -7,8 +7,8 @@
 #' @returns character vector of matched census block group identifiers
 #' @export
 #' @examples
-#' tiger_block_groups(x = s2::as_s2_cell(c("8841b39a7c46e25f", "8841a45555555555")), year = "2023")
-tiger_block_groups <- function(x, year = as.character(2013:2023)) {
+#' s2_join_tiger_bg(x = s2::as_s2_cell(c("8841b39a7c46e25f", "8841a45555555555")), year = "2023")
+s2_join_tiger_bg <- function(x, year = as.character(2013:2023)) {
   rlang::check_installed("sf", "read TIGER/Line census block group geographies")
   rlang::check_installed("s2", "s2 geometry calculations")
   if (!inherits(x, "s2_cell")) stop("x must be a s2_cell vector", call. = FALSE)
@@ -33,6 +33,13 @@ tiger_block_groups <- function(x, year = as.character(2013:2023)) {
   return(stats::setNames(out[as.character(x)], NULL))
 }
 
+#' get s2_geography for census block groups
+#' @param state census FIPS state identifier
+#' @param year vintage of TIGER/Line block group geography files
+#' @returns a tibble with `GEOID` and `s2_geography` columns
+#' @export
+#' @examples
+#' get_tiger_block_groups(state = "39", year = "2022")
 get_tiger_block_groups <- function(state, year) {
   dest <- file.path(tools::R_user_dir("addr", "cache"), glue::glue("tl_{year}_{state}_bg.zip"))
   dir.create(dirname(dest), showWarnings = FALSE)
@@ -54,6 +61,12 @@ get_tiger_block_groups <- function(state, year) {
   return(out)
 }
 
+#' get s2_geography for census states
+#' @param year vintage of TIGER/Line block group geography files
+#' @export
+#' @returns a tibble with `GEOID` and `s2_geography` columns
+#' @examples
+#' tiger_states(year = "2022")
 tiger_states <- function(year) {
   dest <- file.path(tools::R_user_dir("addr", "cache"), glue::glue("tl_{year}_us_state.zip"))
   dir.create(dirname(dest), showWarnings = FALSE)

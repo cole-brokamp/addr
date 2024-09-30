@@ -43,8 +43,8 @@ degauss_s2 <-
 d <-
   dplyr::bind_cols(arrange(addr_s2, addr), degauss_s2 = arrange(degauss_s2, addr)$degauss_s2) |>
   mutate(
-    addr_bg = tiger_block_groups(addr_s2, year = "2020"),
-    degauss_bg = tiger_block_groups(degauss_s2, year = "2020"),
+    addr_bg = s2_join_tiger_bg(addr_s2, year = "2020"),
+    degauss_bg = s2_join_tiger_bg(degauss_s2, year = "2020"),
     s2_dist = s2_cell_distance(addr_s2, degauss_s2)
   )
 
@@ -83,3 +83,6 @@ d |>
   mutate(perc = scales::percent(n / sum(n), accuracy = 0.1)) |>
   arrange(desc(n)) |>
   knitr::kable(digits = 1)
+
+
+# TODO add cagis coordinates to compare?
