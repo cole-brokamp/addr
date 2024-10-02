@@ -37,20 +37,23 @@ of the (unionized) matched street range(s).
 \details{
 Performance was compared to the degauss geocoder (see \verb{/inst/compare_geocoding_to_degauss.R}) using
 real-world addresses in \code{voter_addresses()}.
-Match success rates were highly similar:\tabular{llrl}{
+Match success rates were similar, but DeGAUSS matched about 5\% more of the addresses. These differences are
+sensitive to the match criteria considered for DeGAUSS (here precision of 'range' & score > 0.7 \emph{or}
+precision of 'street' & score > 0.55):\tabular{llrl}{
    addr_matched \tab degauss_matched \tab n \tab perc \cr
-   TRUE \tab TRUE \tab 224974 \tab 92.9\% \cr
-   FALSE \tab TRUE \tab 13713 \tab 5.7\% \cr
-   FALSE \tab FALSE \tab 2687 \tab 1.1\% \cr
-   TRUE \tab FALSE \tab 759 \tab 0.3\% \cr
+   TRUE \tab TRUE \tab 224714 \tab 92.8\% \cr
+   FALSE \tab TRUE \tab 13407 \tab 5.5\% \cr
+   FALSE \tab FALSE \tab 2993 \tab 1.2\% \cr
+   TRUE \tab FALSE \tab 1019 \tab 0.4\% \cr
 }
 
 
-Among those that were geocoded by both, 97.7\% were geocoded to the same census tract:\tabular{llrll}{
+Among those that were geocoded by both, 97.7\% were geocoded to the same census tract, and
+96.6\% to the same block group:\tabular{llrll}{
    ct_agree \tab bg_agree \tab n \tab s2_dist_ptiles (5th, 25th, 50th, 75th, 95th) \tab perc \cr
-   TRUE \tab TRUE \tab 217176 \tab 14.7, 24.3, 39, 68.9, 153.6 \tab 96.5\% \cr
-   FALSE \tab FALSE \tab 5067 \tab 21.9, 40.8, 212.5, 6616.5, 20222.2 \tab 2.3\% \cr
-   TRUE \tab FALSE \tab 2731 \tab 19.6, 28.6, 41.2, 95.1, 569.8 \tab 1.2\% \cr
+   TRUE \tab TRUE \tab 217179 \tab 14.7, 24.3, 39, 68.9, 153.6 \tab 96.6\% \cr
+   FALSE \tab FALSE \tab 4805 \tab 21.6, 39.2, 158.9, 5577.9, 16998.8 \tab 2.1\% \cr
+   TRUE \tab FALSE \tab 2730 \tab 19.6, 28.6, 41.2, 94.8, 571.8 \tab 1.2\% \cr
 }
 }
 \examples{

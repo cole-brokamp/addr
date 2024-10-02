@@ -6,8 +6,7 @@ sessionInfo()
 
 addr_s2 <-
   readRDS("inst/voter_geocode_addr.rds") |>
-  rename(addr_s2 = s2) |>
-  select(-matched_cagis_addr)
+  rename(addr_s2 = s2)
 
 #### I used https://github.com/degauss-org/geocoder.sif, but something like:
 ## ia_d <- tibble::tibble(address = voter_addresses())
@@ -19,19 +18,33 @@ addr_s2 <-
 ##     "run", "--rm",
 ##     "-v ${PWD}/inst:/tmp",
 ##     "ghcr.io/degauss-org/geocoder:3.3.0-v8",
-##     "addr-v0.3.0_voter_addresses.csv"
+##     "addr-v0.3.0_voter_addresses.csv",
+##     "all")
 ##   )
 ## )
 
 degauss_s2 <-
   readr::read_csv(
-    "inst/addr-v0.3.0_voter_addresses_geocoder_3.3.0_score_threshold_0.5.csv",
+    "inst/addr-v0.3.0_voter_addresses_geocoder_3.3.0_score_threshold_all.csv",
     col_types = readr::cols_only(
       address = readr::col_character(),
       lat = readr::col_double(),
       lon = readr::col_double(),
+      precision = readr::col_factor(),
+      score = readr::col_double()
     )
   ) |>
+  mutate(geocoded = {
+    precision == "range" & score > 0.7
+  } | {
+    precision == "street" & score > 0.55
+  })
+
+degauss_s2[!degauss_s2$geocoded, "lat"] <- NA
+degauss_s2[!degauss_s2$geocoded, "lon"] <- NA
+
+degauss_s2 <-
+  degauss_s2 |>
   mutate(
     addr = as_addr(address),
     degauss_s2 = as_s2_cell(s2_lnglat(lon, lat)),
@@ -62,6 +75,16 @@ d |>
   arrange(desc(n)) |>
   knitr::kable()
 
+# inspect those matched by degauss, but not addr
+d |>
+  filter(is.na(addr_s2) & !is.na(degauss_s2)) |>
+  select(address, addr) |>
+  mutate(addr = as.data.frame(addr)) |>
+  tidyr::unnest(addr) |>
+  filter(zip_code == "45220") |>
+  print(n = 100)
+
+
 # agreement on census geographies among both matched addresses
 d |>
   filter(!is.na(degauss_s2) & !is.na(addr_s2)) |>
@@ -83,6 +106,3 @@ d |>
   mutate(perc = scales::percent(n / sum(n), accuracy = 0.1)) |>
   arrange(desc(n)) |>
   knitr::kable(digits = 1)
-
-
-# TODO add cagis coordinates to compare?
