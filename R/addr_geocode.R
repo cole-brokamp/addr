@@ -37,11 +37,13 @@
 #' |FALSE    |FALSE    |   4805|21.6, 39.2, 158.9, 5577.9, 16998.8           |2.1%  |
 #' |TRUE     |FALSE    |   2730|19.6, 28.6, 41.2, 94.8, 571.8                |1.2%  |
 #' @examples
+#' set.seed(1)
 #' cagis_s2 <-
 #'   cagis_addr()$cagis_addr_data |>
 #'   purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
 #'   purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
-#' addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2)
+#' addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2) |>
+#'   print(n = 100)
 addr_match_geocode <- function(x,
                                ref_addr = cagis_addr()$cagis_addr,
                                ref_s2,
@@ -69,7 +71,8 @@ addr_match_geocode <- function(x,
       x_addr[x_addr_ref_no_match_which],
       county = county,
       year = year,
-      summarize = "centroid",
+      street_only_match = FALSE,
+      summarize = "centroid"
     ) |>
     purrr::discard(\(.) length(.) < 1) |> # removes NULL
     purrr::discard(\(.) nrow(.) < 1) |> # removes empty data.frame
@@ -78,16 +81,34 @@ addr_match_geocode <- function(x,
   x_which_addr_tiger_match <- match(names(t_matches), names(x_s2))
   x_s2[x_which_addr_tiger_match] <- t_matches
 
+  x_addr_ref_no_no_match_which <- is.na(x_s2)
+
+  t_street_matches <-
+    addr_match_tiger_street_ranges(
+      x_addr[x_addr_ref_no_no_match_which],
+      county = county,
+      year = year,
+      street_only_match = TRUE,
+      summarize = "centroid"
+    ) |>
+    purrr::discard(\(.) length(.) < 1) |> # removes NULL
+    purrr::discard(\(.) nrow(.) < 1) |> # removes empty data.frame
+    purrr::map_vec(\(.) s2::as_s2_cell(.$s2_geography), .ptype = s2::s2_cell())
+
+  x_which_addr_tiger_street_match <- match(names(t_street_matches), names(x_s2))
+  x_s2[x_which_addr_tiger_street_match] <- t_street_matches
+
   x_mm <- rep(NA, length = length(x_s2))
   x_mm[!is.na(x_addr_ref_match_which)] <- "ref_addr"
   x_mm[x_which_addr_tiger_match] <- "tiger_range"
+  x_mm[x_which_addr_tiger_street_match] <- "tiger_street"
   x_mm[is.na(x_mm)] <- "none"
 
   out <-
     tibble::tibble(
       addr = x_addr,
       s2 = x_s2,
-      match_method = factor(x_mm, levels = c("ref_addr", "tiger_range", "none"))
+      match_method = factor(x_mm, levels = c("ref_addr", "tiger_range", "tiger_street", "none"))
     )
 
   return(out)
