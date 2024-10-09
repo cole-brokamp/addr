@@ -1,8 +1,14 @@
 #' Geocode addr vectors
 #'
-#' Addresses are first matched to a set of reference addresses with corresponding s2 cell locations.
-#' Unmatched addresses are matched to TIGER street ranges by street name and number in the given county and year,
-#' returning the centroid of the (unionized) matched street range(s).
+#' Addresses are attempted to be matched to reference geographies using different methods
+#' associated with decreasing levels of precision in the order listed below.
+#' Each method generates matched s2 cell identifiers differently
+#' and is recorded in the `match_method` column of the returned tibble:  
+#' 1. `ref_addr`: reference s2 cell from direct match to reference address
+#' 2. `tiger_range`: centroid of street-matched TIGER address ranges containing street number
+#' 3. `tiger_street`: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+#' 4. `none`: unmatched using all previous approaches; return missing s2 cell identifier
+#'
 #' @param x an addr vector (or character vector of address strings) to geocode
 #' @param ref_addr an addr vector to search for matches in
 #' @param ref_s2 a s2_cell vector of locations for each ref_addr
@@ -10,8 +16,7 @@
 #' @param year character year for TIGER street range files to search for matches in
 #' @returns a tibble with columns: `addr` contains `x` converted to an `addr` vector,
 #' `s2` contains the resulting geocoded s2 cells as an `s2cell` vector,
-#' `match_method` is a factor with levels `ref_addr`, `tiger_range`, `none` to record
-#' the method by which each address was matched
+#' `match_method` is a factor with levels described above
 #' @export
 #' @details
 #'
