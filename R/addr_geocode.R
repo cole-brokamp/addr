@@ -1,8 +1,14 @@
-#' geocode addr vectors
+#' Geocode addr vectors
 #'
-#' Addresses are matched to a set of reference addresses; if unmatched,
-#' they are next matched to TIGER street ranges by number and street name, returning the centroid
-#' of the (unionized) matched street range(s).
+#' Addresses are attempted to be matched to reference geographies using different methods
+#' associated with decreasing levels of precision in the order listed below.
+#' Each method generates matched s2 cell identifiers differently
+#' and is recorded in the `match_method` column of the returned tibble:  
+#' 1. `ref_addr`: reference s2 cell from direct match to reference address
+#' 2. `tiger_range`: centroid of street-matched TIGER address ranges containing street number
+#' 3. `tiger_street`: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+#' 4. `none`: unmatched using all previous approaches; return missing s2 cell identifier
+#'
 #' @param x an addr vector (or character vector of address strings) to geocode
 #' @param ref_addr an addr vector to search for matches in
 #' @param ref_s2 a s2_cell vector of locations for each ref_addr
@@ -10,8 +16,7 @@
 #' @param year character year for TIGER street range files to search for matches in
 #' @returns a tibble with columns: `addr` contains `x` converted to an `addr` vector,
 #' `s2` contains the resulting geocoded s2 cells as an `s2cell` vector,
-#' `match_method` is a factor with levels `ref_addr`, `tiger_range`, `none` to record
-#' the method by which each address was matched
+#' `match_method` is a factor with levels described above
 #' @export
 #' @details
 #'
@@ -37,11 +42,13 @@
 #' |FALSE    |FALSE    |   4805|21.6, 39.2, 158.9, 5577.9, 16998.8           |2.1%  |
 #' |TRUE     |FALSE    |   2730|19.6, 28.6, 41.2, 94.8, 571.8                |1.2%  |
 #' @examples
+#' set.seed(1)
 #' cagis_s2 <-
 #'   cagis_addr()$cagis_addr_data |>
 #'   purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
 #'   purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
-#' addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2)
+#' addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2) |>
+#'   print(n = 100)
 addr_match_geocode <- function(x,
                                ref_addr = cagis_addr()$cagis_addr,
                                ref_s2,
@@ -69,7 +76,8 @@ addr_match_geocode <- function(x,
       x_addr[x_addr_ref_no_match_which],
       county = county,
       year = year,
-      summarize = "centroid",
+      street_only_match = FALSE,
+      summarize = "centroid"
     ) |>
     purrr::discard(\(.) length(.) < 1) |> # removes NULL
     purrr::discard(\(.) nrow(.) < 1) |> # removes empty data.frame
@@ -78,16 +86,34 @@ addr_match_geocode <- function(x,
   x_which_addr_tiger_match <- match(names(t_matches), names(x_s2))
   x_s2[x_which_addr_tiger_match] <- t_matches
 
+  x_addr_ref_no_no_match_which <- is.na(x_s2)
+
+  t_street_matches <-
+    addr_match_tiger_street_ranges(
+      x_addr[x_addr_ref_no_no_match_which],
+      county = county,
+      year = year,
+      street_only_match = TRUE,
+      summarize = "centroid"
+    ) |>
+    purrr::discard(\(.) length(.) < 1) |> # removes NULL
+    purrr::discard(\(.) nrow(.) < 1) |> # removes empty data.frame
+    purrr::map_vec(\(.) s2::as_s2_cell(.$s2_geography), .ptype = s2::s2_cell())
+
+  x_which_addr_tiger_street_match <- match(names(t_street_matches), names(x_s2))
+  x_s2[x_which_addr_tiger_street_match] <- t_street_matches
+
   x_mm <- rep(NA, length = length(x_s2))
   x_mm[!is.na(x_addr_ref_match_which)] <- "ref_addr"
   x_mm[x_which_addr_tiger_match] <- "tiger_range"
+  x_mm[x_which_addr_tiger_street_match] <- "tiger_street"
   x_mm[is.na(x_mm)] <- "none"
 
   out <-
     tibble::tibble(
       addr = x_addr,
       s2 = x_s2,
-      match_method = factor(x_mm, levels = c("ref_addr", "tiger_range", "none"))
+      match_method = factor(x_mm, levels = c("ref_addr", "tiger_range", "tiger_street", "none"))
     )
 
   return(out)

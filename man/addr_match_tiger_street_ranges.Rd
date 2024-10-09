@@ -2,7 +2,7 @@
 % Please edit documentation in R/addr_tiger_match.R
 \name{addr_match_tiger_street_ranges}
 \alias{addr_match_tiger_street_ranges}
-\title{match an addr vector to a tigris street range}
+\title{Match an addr vector to TIGER street ranges}
 \usage{
 addr_match_tiger_street_ranges(
   x,
@@ -31,7 +31,7 @@ a street range tibble with zero rows indicates that although a street was matche
 there was no range containing the street number
 }
 \description{
-match an addr vector to a tigris street range
+Match an addr vector to TIGER street ranges
 }
 \examples{
 my_addr <- as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St"))

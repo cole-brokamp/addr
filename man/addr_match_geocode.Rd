@@ -2,7 +2,7 @@
 % Please edit documentation in R/addr_geocode.R
 \name{addr_match_geocode}
 \alias{addr_match_geocode}
-\title{geocode addr vectors}
+\title{Geocode addr vectors}
 \usage{
 addr_match_geocode(
   x,
@@ -26,13 +26,19 @@ addr_match_geocode(
 \value{
 a tibble with columns: \code{addr} contains \code{x} converted to an \code{addr} vector,
 \code{s2} contains the resulting geocoded s2 cells as an \code{s2cell} vector,
-\code{match_method} is a factor with levels \code{ref_addr}, \code{tiger_range}, \code{none} to record
-the method by which each address was matched
+\code{match_method} is a factor with levels described above
 }
 \description{
-Addresses are matched to a set of reference addresses; if unmatched,
-they are next matched to TIGER street ranges by number and street name, returning the centroid
-of the (unionized) matched street range(s).
+Addresses are attempted to be matched to reference geographies using different methods
+associated with decreasing levels of precision in the order listed below.
+Each method generates matched s2 cell identifiers differently
+and is recorded in the \code{match_method} column of the returned tibble:
+\enumerate{
+\item \code{ref_addr}: reference s2 cell from direct match to reference address
+\item \code{tiger_range}: centroid of street-matched TIGER address ranges containing street number
+\item \code{tiger_street}: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+\item \code{none}: unmatched using all previous approaches; return missing s2 cell identifier
+}
 }
 \details{
 Performance was compared to the degauss geocoder (see \verb{/inst/compare_geocoding_to_degauss.R}) using
@@ -57,9 +63,11 @@ Among those that were geocoded by both, 97.7\% were geocoded to the same census 
 }
 }
 \examples{
+set.seed(1)
 cagis_s2 <-
   cagis_addr()$cagis_addr_data |>
   purrr::modify_if(\(.) length(.) > 0 && nrow(.) > 1, dplyr::slice_sample, n = 1) |>
   purrr::map_vec(purrr::pluck, "cagis_s2", .default = NA, .ptype = s2::s2_cell())
-addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2)
+addr_match_geocode(x = sample(voter_addresses(), 100), ref_s2 = cagis_s2) |>
+  print(n = 100)
 }

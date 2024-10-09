@@ -42,7 +42,7 @@ get_tiger_street_ranges <- function(county, year = "2022") {
     tibble::deframe()
 }
 
-#' match an addr vector to a tigris street range
+#' Match an addr vector to TIGER street ranges
 #' @param x an addr vector to match
 #' @param county character string of county identifier
 #' @param year year of tigris product
