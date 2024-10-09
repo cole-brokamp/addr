@@ -1,8 +1,8 @@
-#' geocode addr vectors
+#' Geocode addr vectors
 #'
-#' Addresses are matched to a set of reference addresses; if unmatched,
-#' they are next matched to TIGER street ranges by number and street name, returning the centroid
-#' of the (unionized) matched street range(s).
+#' Addresses are first matched to a set of reference addresses with corresponding s2 cell locations.
+#' Unmatched addresses are matched to TIGER street ranges by street name and number in the given county and year,
+#' returning the centroid of the (unionized) matched street range(s).
 #' @param x an addr vector (or character vector of address strings) to geocode
 #' @param ref_addr an addr vector to search for matches in
 #' @param ref_s2 a s2_cell vector of locations for each ref_addr

@@ -2,7 +2,7 @@
 % Please edit documentation in R/addr_geocode.R
 \name{addr_match_geocode}
 \alias{addr_match_geocode}
-\title{geocode addr vectors}
+\title{Geocode addr vectors}
 \usage{
 addr_match_geocode(
   x,
@@ -30,9 +30,9 @@ a tibble with columns: \code{addr} contains \code{x} converted to an \code{addr}
 the method by which each address was matched
 }
 \description{
-Addresses are matched to a set of reference addresses; if unmatched,
-they are next matched to TIGER street ranges by number and street name, returning the centroid
-of the (unionized) matched street range(s).
+Addresses are first matched to a set of reference addresses with corresponding s2 cell locations.
+Unmatched addresses are matched to TIGER street ranges by street name and number in the given county and year,
+returning the centroid of the (unionized) matched street range(s).
 }
 \details{
 Performance was compared to the degauss geocoder (see \verb{/inst/compare_geocoding_to_degauss.R}) using
