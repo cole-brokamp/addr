@@ -5,7 +5,7 @@ Each method generates matched s2 cell identifiers differently
 and is recorded in the match_method column of the returned tibble:
 ref_addr: reference s2 cell from direct match to reference address
 tiger_range: centroid of street-matched TIGER address ranges containing street number
-tiger_street: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+tiger_street: centroid of street-matched TIGER address ranges closest to the street number
 none: unmatched using all previous approaches; return missing s2 cell identifier
 
 "><meta property="og:description" content="Addresses are attempted to be matched to reference geographies using different methods
@@ -14,7 +14,7 @@ Each method generates matched s2 cell identifiers differently
 and is recorded in the match_method column of the returned tibble:
 ref_addr: reference s2 cell from direct match to reference address
 tiger_range: centroid of street-matched TIGER address ranges containing street number
-tiger_street: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+tiger_street: centroid of street-matched TIGER address ranges closest to the street number
 none: unmatched using all previous approaches; return missing s2 cell identifier
 
 "></head><body>
@@ -25,7 +25,7 @@ none: unmatched using all previous approaches; return missing s2 cell identifier
 
     <a class="navbar-brand me-2" href="../index.html">addr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ associated with decreasing levels of precision in the order listed below.
 Each method generates matched s2 cell identifiers differently
 and is recorded in the <code>match_method</code> column of the returned tibble:</p><ol><li><p><code>ref_addr</code>: reference s2 cell from direct match to reference address</p></li>
 <li><p><code>tiger_range</code>: centroid of street-matched TIGER address ranges containing street number</p></li>
-<li><p><code>tiger_street</code>: centroid of street-matched TIGER address ranges for entire street if no containing ranges</p></li>
+<li><p><code>tiger_street</code>: centroid of street-matched TIGER address ranges closest to the street number</p></li>
 <li><p><code>none</code>: unmatched using all previous approaches; return missing s2 cell identifier</p></li>
 </ol></div>
 
@@ -119,8 +119,10 @@ precision of 'street' &amp; score &gt; 0.55):</p><table class="table table"><tr>
 <span class="r-in"><span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span><span class="fu">purrr</span><span class="fu">::</span><span class="va"><a href="https://purrr.tidyverse.org/reference/pluck.html" class="external-link">pluck</a></span>, <span class="st">"cagis_s2"</span>, .default <span class="op">=</span> <span class="cn">NA</span>, .ptype <span class="op">=</span> <span class="fu">s2</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/s2/reference/s2_cell.html" class="external-link">s2_cell</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">addr_match_geocode</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="voter_addresses.html">voter_addresses</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">100</span><span class="op">)</span>, ref_s2 <span class="op">=</span> <span class="va">cagis_s2</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 20/33 ZIP codes [3.9s elapsed] </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 33/33 ZIP codes [6.4s elapsed] </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 8/33 ZIP codes [1.1s elapsed] </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 21/33 ZIP codes [4.5s elapsed] </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 32/33 ZIP codes [7s elapsed] </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> matching addresses in 33/33 ZIP codes [7.1s elapsed] </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                 addr s2             match_method</span>

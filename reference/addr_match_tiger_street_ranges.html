@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">addr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  county <span class="op">=</span> <span class="st">"39061"</span>,</span>
 <span>  year <span class="op">=</span> <span class="st">"2022"</span>,</span>
-<span>  street_only_match <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  street_only_match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"all"</span>, <span class="st">"closest"</span><span class="op">)</span>,</span>
 <span>  summarize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"union"</span>, <span class="st">"centroid"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -64,8 +64,8 @@
 
 
 <dt id="arg-street-only-match">street_only_match<a class="anchor" aria-label="anchor" href="#arg-street-only-match"></a></dt>
-<dd><p>logical; consider an addr that matches on street name,
-but does not have a street number within the listed ranges a match?</p></dd>
+<dd><p>for addresses that match a TIGER street name, but have street numbers that don't
+intersect with ranges of potential street numbers, return <code>"none"</code>, <code>"all"</code>, or the <code>"closest"</code> range geographies</p></dd>
 
 
 <dt id="arg-summarize">summarize<a class="anchor" aria-label="anchor" href="#arg-summarize"></a></dt>
@@ -84,7 +84,7 @@ there was no range containing the street number</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">my_addr</span> <span class="op">&lt;-</span> <span class="fu"><a href="addr.html">as_addr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"224 Woolper Ave"</span>, <span class="st">"3333 Burnet Ave"</span>, <span class="st">"33333 Burnet Ave"</span>, <span class="st">"609 Walnut St"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, street_only_match <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, street_only_match <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`224 Woolper Avenue`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   TLID      s2_geography                                              from    to</span>
@@ -99,8 +99,29 @@ there was no range containing the street number</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 103925699 LINESTRING (-84.500525 39.139737, -84.500403 39.14089)  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>398</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`33333 Burnet Avenue`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 variables: TLID &lt;chr&gt;, s2_geography &lt;s2_geography&gt;, from &lt;dbl&gt;, to &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    TLID      s2_geography                                             from    to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 103925448 LINESTRING (-84.499935 39.145118, -84.499813 39.146256)  <span style="text-decoration: underline;">3</span>500  <span style="text-decoration: underline;">3</span>599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 103925451 LINESTRING (-84.50004 39.144148, -84.499935 39.145118)   <span style="text-decoration: underline;">3</span>401  <span style="text-decoration: underline;">3</span>499</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 103925453 LINESTRING (-84.500084 39.143783, -84.50004 39.144148)   <span style="text-decoration: underline;">3</span>432  <span style="text-decoration: underline;">3</span>466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 103925455 LINESTRING (-84.500181 39.142878, -84.500084 39.143783)  <span style="text-decoration: underline;">3</span>400  <span style="text-decoration: underline;">3</span>430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 103925697 LINESTRING (-84.500403 39.14089, -84.500289 39.141892)   <span style="text-decoration: underline;">3</span>301  <span style="text-decoration: underline;">3</span>399</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 103925699 LINESTRING (-84.500525 39.139737, -84.500403 39.14089)   <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 103925700 LINESTRING (-84.500652 39.138641, -84.500525 39.139737)  <span style="text-decoration: underline;">3</span>235  <span style="text-decoration: underline;">3</span>298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 103925701 LINESTRING (-84.500867 39.136617, -84.500666 39.13853)   <span style="text-decoration: underline;">3</span>200  <span style="text-decoration: underline;">3</span>234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 103925703 LINESTRING (-84.500918 39.136124, -84.500867 39.136617)  <span style="text-decoration: underline;">3</span>100  <span style="text-decoration: underline;">3</span>199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 103971004 LINESTRING (-84.50102 39.135173, -84.500943 39.135883)   <span style="text-decoration: underline;">3</span>101  <span style="text-decoration: underline;">3</span>117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> 103925748 LINESTRING (-84.501259 39.133087, -84.50102 39.135173)   <span style="text-decoration: underline;">2</span>900  <span style="text-decoration: underline;">3</span>099</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> 103965385 LINESTRING (-84.501494 39.130948, -84.501314 39.132613)  <span style="text-decoration: underline;">2</span>800  <span style="text-decoration: underline;">2</span>899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> 103925898 LINESTRING (-84.501709 39.128975, -84.501494 39.130948)  <span style="text-decoration: underline;">2</span>600  <span style="text-decoration: underline;">2</span>799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> 103925900 LINESTRING (-84.501777 39.128388, -84.501709 39.128975)  <span style="text-decoration: underline;">2</span>601  <span style="text-decoration: underline;">2</span>621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> 103925902 LINESTRING (-84.50188 39.12747, -84.501777 39.128388)    <span style="text-decoration: underline;">2</span>550  <span style="text-decoration: underline;">2</span>598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> 103925903 LINESTRING (-84.501832 39.126684, -84.501914 39.127034…  <span style="text-decoration: underline;">2</span>500  <span style="text-decoration: underline;">2</span>599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> 103925914 LINESTRING (-84.502386 39.122796, -84.502278 39.123766)  <span style="text-decoration: underline;">2</span>300  <span style="text-decoration: underline;">2</span>399</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> 103925934 LINESTRING (-84.502601 39.120814, -84.502386 39.122796)  <span style="text-decoration: underline;">2</span>200  <span style="text-decoration: underline;">2</span>299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> 103925937 LINESTRING (-84.502931 39.117861, -84.502601 39.120814)  <span style="text-decoration: underline;">2</span>000  <span style="text-decoration: underline;">2</span>199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> 103925750 LINESTRING (-84.501314 39.132613, -84.501259 39.133087)  <span style="text-decoration: underline;">2</span>901  <span style="text-decoration: underline;">2</span>999</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`609 Walnut Street`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -120,24 +141,23 @@ there was no range containing the street number</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103925697-103925699 POINT (-84.5004091 39.1408146)  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`33333 Burnet Avenue`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                                                  s2_geography  from    to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                 <span style="color: #949494; font-style: italic;">&lt;s2_geograp&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103925448-103925451-103925453-103925455-103925697-10… POINT (-84.…  <span style="text-decoration: underline;">2</span>000  <span style="text-decoration: underline;">3</span>599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 variables: TLID &lt;chr&gt;, s2_geography &lt;s2_geography&gt;, from &lt;dbl&gt;, to &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`609 Walnut Street`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>, summarize <span class="op">=</span> <span class="st">"centroid"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">addr_match_tiger_street_ranges</span><span class="op">(</span><span class="va">my_addr</span>, county <span class="op">=</span> <span class="st">"39061"</span>,</span></span>
+<span class="r-in"><span>                               street_only_match <span class="op">=</span> <span class="st">"closest"</span>, summarize <span class="op">=</span> <span class="st">"centroid"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>census_bg_id <span class="op">=</span> <span class="fu"><a href="s2_join_tiger_bg.html">s2_join_tiger_bg</a></span><span class="op">(</span><span class="fu">s2</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/s2/reference/s2_cell.html" class="external-link">as_s2_cell</a></span><span class="op">(</span><span class="va">s2_geography</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                                     s2_geography  from    to census_bg_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;s2_geograp&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294                                POINT (-84.…   100   299 390610070002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 103925697-103925699                      POINT (-84.…  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399 390610270002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 103925448-103925451-103925453-103925455… POINT (-84.…  <span style="text-decoration: underline;">2</span>000  <span style="text-decoration: underline;">3</span>599 390610270002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TLID                s2_geography                    from    to census_bg_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;s2_geography&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 103924294           POINT (-84.5148163 39.1499943)   100   299 390610070002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 103925697-103925699 POINT (-84.5004091 39.1408146)  <span style="text-decoration: underline;">3</span>247  <span style="text-decoration: underline;">3</span>399 390610270002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 103925448           POINT (-84.499874 39.145687)    <span style="text-decoration: underline;">3</span>500  <span style="text-decoration: underline;">3</span>599 390610068002</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
