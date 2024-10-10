@@ -1,5 +1,5 @@
 Package: addr
-Title: Clean, Parse, Harmonize, and Hash Messy Real-World Addresses
+Title: Clean, Parse, Harmonize, Match, and Geocode Messy Real-World Addresses
 Version: 0.4.0.9010
 Authors@R: 
     person("Cole", "Brokamp", , "cole@colebrokamp.com", role = c("aut", "cre"),
