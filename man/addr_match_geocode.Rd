@@ -36,7 +36,7 @@ and is recorded in the \code{match_method} column of the returned tibble:
 \enumerate{
 \item \code{ref_addr}: reference s2 cell from direct match to reference address
 \item \code{tiger_range}: centroid of street-matched TIGER address ranges containing street number
-\item \code{tiger_street}: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+\item \code{tiger_street}: centroid of street-matched TIGER address ranges closest to the street number
 \item \code{none}: unmatched using all previous approaches; return missing s2 cell identifier
 }
 }

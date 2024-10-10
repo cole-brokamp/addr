@@ -46,9 +46,9 @@ get_tiger_street_ranges <- function(county, year = "2022") {
 #' @param x an addr vector to match
 #' @param county character string of county identifier
 #' @param year year of tigris product
+#' @param street_only_match for addresses that match a TIGER street name, but have street numbers that don't
+#' intersect with ranges of potential street numbers, return `"none"`, `"all"`, or the `"closest"` range geographies
 #' @param summarize optionally summarize matched street ranges as their union or centroid
-#' @param street_only_match logical; consider an addr that matches on street name,
-#' but does not have a street number within the listed ranges a match?
 #' @return a list of matched tigris street range tibbles;
 #' a NULL value indicates that no street name was matched; if `street_only_match` is FALSE,
 #' a street range tibble with zero rows indicates that although a street was matched,
@@ -57,19 +57,21 @@ get_tiger_street_ranges <- function(county, year = "2022") {
 #' @examples
 #' my_addr <- as_addr(c("224 Woolper Ave", "3333 Burnet Ave", "33333 Burnet Ave", "609 Walnut St"))
 #' 
-#' addr_match_tiger_street_ranges(my_addr, county = "39061", street_only_match = FALSE)
+#' addr_match_tiger_street_ranges(my_addr, county = "39061", street_only_match = "all")
 #' 
 #' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid")
 #'
-#' addr_match_tiger_street_ranges(my_addr, county = "39061", summarize = "centroid") |>
+#' addr_match_tiger_street_ranges(my_addr, county = "39061",
+#'                                street_only_match = "closest", summarize = "centroid") |>
 #'   dplyr::bind_rows() |>
 #'   dplyr::mutate(census_bg_id = s2_join_tiger_bg(s2::as_s2_cell(s2_geography)))
 addr_match_tiger_street_ranges <- function(x,
                                            county = "39061",
                                            year = "2022",
-                                           street_only_match = TRUE,
+                                           street_only_match = c("none", "all", "closest"),
                                            summarize = c("none", "union", "centroid")) {
   stopifnot(inherits(x, "addr"))
+  street_only_match <- rlang::arg_match(street_only_match)
   summarize <- rlang::arg_match(summarize)
   ia <- unique(x)
   d_tiger <- get_tiger_street_ranges(county = county, year = year)
@@ -96,8 +98,12 @@ addr_match_tiger_street_ranges <- function(x,
       vctrs::field(ia, "street_number"), street_matches,
       \(.sn, .sm) {
         out <- dplyr::filter(.sm, from <= .sn, to >= .sn)
-        if (nrow(out) == 0 & street_only_match) {
-          return(.sm)
+        if (nrow(out) == 0) {
+          if (street_only_match == "none") return(out)
+          if (street_only_match == "all") return(.sm)
+          if (street_only_match == "closest") {
+            return(.sm[unique(which.min(abs(.sm$from - .sn)), which.min(abs(.sm$to - .sn))), ])
+          }
         }
         return(out)
       }
