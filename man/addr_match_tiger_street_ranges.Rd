@@ -8,7 +8,7 @@ addr_match_tiger_street_ranges(
   x,
   county = "39061",
   year = "2022",
-  street_only_match = TRUE,
+  street_only_match = c("none", "all", "closest"),
   summarize = c("none", "union", "centroid")
 )
 }
@@ -19,8 +19,8 @@ addr_match_tiger_street_ranges(
 
 \item{year}{year of tigris product}
 
-\item{street_only_match}{logical; consider an addr that matches on street name,
-but does not have a street number within the listed ranges a match?}
+\item{street_only_match}{for addresses that match a TIGER street name, but have street numbers that don't
+intersect with ranges of potential street numbers, return \code{"none"}, \code{"all"}, or the \code{"closest"} range geographies}
 
 \item{summarize}{optionally summarize matched street ranges as their union or centroid}
 }

@@ -6,7 +6,7 @@
 #' and is recorded in the `match_method` column of the returned tibble:  
 #' 1. `ref_addr`: reference s2 cell from direct match to reference address
 #' 2. `tiger_range`: centroid of street-matched TIGER address ranges containing street number
-#' 3. `tiger_street`: centroid of street-matched TIGER address ranges for entire street if no containing ranges
+#' 3. `tiger_street`: centroid of street-matched TIGER address ranges closest to the street number
 #' 4. `none`: unmatched using all previous approaches; return missing s2 cell identifier
 #'
 #' @param x an addr vector (or character vector of address strings) to geocode
@@ -76,7 +76,7 @@ addr_match_geocode <- function(x,
       x_addr[x_addr_ref_no_match_which],
       county = county,
       year = year,
-      street_only_match = FALSE,
+      street_only_match = "none",
       summarize = "centroid"
     ) |>
     purrr::discard(\(.) length(.) < 1) |> # removes NULL
@@ -93,7 +93,7 @@ addr_match_geocode <- function(x,
       x_addr[x_addr_ref_no_no_match_which],
       county = county,
       year = year,
-      street_only_match = TRUE,
+      street_only_match = "closest",
       summarize = "centroid"
     ) |>
     purrr::discard(\(.) length(.) < 1) |> # removes NULL
