@@ -8,7 +8,7 @@ cagis_s2 <-
 
 set.seed(1)
 d <- addr_match_geocode(
-  x = sample(voter_addresses(), 200),
+  x = sample(voter_addresses(), 500),
   ref_addr = cagis_addr()$cagis_addr,
   ref_s2 = cagis_s2,
   county = "39061",
@@ -20,13 +20,15 @@ table(d$match_method)
 d <-
   dplyr::filter(d, match_method %in% c("ref_addr", "tiger_range"))
 
-d$coarse_s2 <- s2_cell_parent(d$s2, 15)
+d$coarse_s2 <- s2_cell_parent(d$s2, 14)
 d$coarse_s2_char <- as.character(d$coarse_s2)
 
+# median cell side length in sq m
+sqrt(median(s2_cell_area_approx(d$coarse_s2)))
 # median area in sq km
 median(s2_cell_area_approx(d$coarse_s2)) / 1000000
 
-d$geometry <- sf::st_as_sfc(s2_cell_center(d$s2))
+d$geometry <- sf::st_as_sfc(s2::s2_cell_center(d$s2))
 
 bg <-
   get_tiger_block_groups("39", "2022") |>
@@ -38,19 +40,21 @@ s2::s2_plot(s2_cell_to_lnglat(d$s2), add = TRUE, col = codec::codec_colors("dark
 
 library(rdeck)
 
-rdeck(map_style = sprintf("mapbox://styles/mapbox/light-v%d", 10), initial_bounds = sf::st_bbox(bg$geometry)) |>
+rdeck(
+  map_style = "mapbox://styles/brokamrc/cm2auuzwp00wc01qkel44d123",
+  initial_bounds = sf::st_bbox(bg$geometry)
+) |>
   add_polygon_layer(
     data = bg,
     name = "block groups",
     get_polygon = geometry,
-    opacity = 0.2,
-    filled = TRUE,
+    opacity = 0.7,
+    filled = FALSE,
     stroked = TRUE,
-    get_fill_color = codec::codec_colors("white"),
-    get_line_color = codec::codec_colors("grey blue"),
-    get_line_width = 50,
+    get_line_color = codec::codec_colors("darkish blue"),
+    get_line_width = 20,
     visible = TRUE,
-    visibility_toggle = FALSE,
+    visibility_toggle = TRUE,
     pickable = FALSE
   ) |>
   ## add_polygon_layer(
@@ -60,16 +64,23 @@ rdeck(map_style = sprintf("mapbox://styles/mapbox/light-v%d", 10), initial_bound
   ## ) |>
   add_s2_layer(
     data = d,
-    name = "s2_cell_layer",
+    name = "S2 geometry level 14 (~ 0.25 sq km)",
     get_s2_token = coarse_s2_char,
     opacity = 0.5,
     get_fill_color = codec::codec_colors("red")
   ) |>
   add_scatterplot_layer(
-    name = "s2_cell_centers",
+    name = "S2 geometry cell center",
     data = d,
     opacity = 0.5,
     get_radius = 50,
     get_position = geometry,
     get_fill_color = codec::codec_colors("orange"),
-  )
+    )
+
+|>
+  add_tile_layer(data = labels_tiles, name = "labels", visible = TRUE, pickable = FALSE)
+
+labels_tile_url <- glue::glue(
+  "https://api.mapbox.com/styles/v1/brokamrc/{style_id}/tiles/256/{z}/{x}/{y}@2x?access_token={Sys.getenv('MAPBOX_TOKEN')}"
+)
